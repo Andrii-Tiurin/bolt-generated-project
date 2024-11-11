@@ -1,0 +1,17 @@
+/* Добавьте эти стили к существующим */
+
+.footer-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.author {
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+.author span {
+  font-weight: 500;
+}

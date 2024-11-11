@@ -1,0 +1,19 @@
+{
+  "name": "travel-agency-admin",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@libsql/client": "^0.3.5",
+    "bcryptjs": "^2.4.3",
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "vite": "^4.3.9"
+  }
+}
