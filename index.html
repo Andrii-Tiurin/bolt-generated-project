@@ -1,15 +1,879 @@
 <!DOCTYPE html>
-<html lang="uk">
-<!-- ... остальной код остается без изменений ... -->
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Monotours24 – Dokumentenpaket Generator</title>
+  <style id="page-styles">
+    :root {
+      color-scheme: light;
+      font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      --primary: #0c4f88;
+      --accent: #e5f1fb;
+      --border: #c8d6e5;
+      --text-muted: #546e7a;
+      --sheet-width: 210mm;
+    }
 
-<footer>
-  <div class="container">
-    <div class="footer-content">
-      <p>&copy; 2023 MonoTours. Всі права захищені.</p>
-      <p class="author">Розробник: <span>Andrii Tiurin</span></p>
-    </div>
-  </div>
-</footer>
+    * {
+      box-sizing: border-box;
+    }
 
+    body {
+      margin: 0;
+      background: linear-gradient(135deg, #f4f7fb, #eef3f9 45%, #e9f1fb);
+      color: #1a2a3a;
+      line-height: 1.55;
+    }
+
+    header {
+      background: white;
+      padding: 2rem 1.5rem 1rem;
+      box-shadow: 0 8px 24px rgba(12, 79, 136, 0.08);
+      margin-bottom: 2rem;
+    }
+
+    header h1 {
+      margin: 0 0 0.5rem 0;
+      font-size: clamp(2rem, 3vw, 2.6rem);
+      color: var(--primary);
+      letter-spacing: 0.04em;
+    }
+
+    header p {
+      max-width: 640px;
+      margin: 0;
+      color: var(--text-muted);
+      font-size: 1.05rem;
+    }
+
+    main {
+      display: grid;
+      gap: 2rem;
+      padding: 0 1.5rem 3rem;
+      margin: 0 auto;
+      max-width: 1200px;
+    }
+
+    .form-card {
+      background: white;
+      padding: clamp(1.5rem, 3vw, 2.25rem);
+      border-radius: 18px;
+      box-shadow: 0 12px 32px rgba(12, 79, 136, 0.08);
+      border: 1px solid rgba(12, 79, 136, 0.08);
+    }
+
+    .form-card h2 {
+      margin-top: 0;
+      color: var(--primary);
+      font-size: 1.6rem;
+    }
+
+    form {
+      display: grid;
+      gap: 1.5rem;
+    }
+
+    .grid-2 {
+      display: grid;
+      gap: 1.25rem;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    }
+
+    label {
+      font-weight: 600;
+      display: block;
+      margin-bottom: 0.4rem;
+      color: #12324a;
+    }
+
+    input[type="text"],
+    input[type="date"],
+    input[type="number"],
+    input[type="file"],
+    textarea {
+      width: 100%;
+      padding: 0.65rem 0.75rem;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      font-size: 1rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      background-color: #fbfcfe;
+    }
+
+    input:focus,
+    textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(12, 79, 136, 0.1);
+      outline: none;
+      background-color: white;
+    }
+
+    .checkbox-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 0.9rem 1.5rem;
+      padding: 0.75rem 1rem;
+      border-radius: 14px;
+      background: var(--accent);
+      border: 1px solid rgba(12, 79, 136, 0.15);
+    }
+
+    .checkbox-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+      font-weight: 600;
+      color: #12324a;
+    }
+
+    .checkbox-item input {
+      margin-top: 0.2rem;
+      transform: scale(1.2);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      justify-content: flex-start;
+    }
+
+    button,
+    .actions button {
+      border: none;
+      border-radius: 999px;
+      padding: 0.75rem 1.75rem;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    button.primary {
+      background: var(--primary);
+      color: white;
+      box-shadow: 0 12px 24px rgba(12, 79, 136, 0.25);
+    }
+
+    button.secondary {
+      background: white;
+      color: var(--primary);
+      border: 1px solid rgba(12, 79, 136, 0.35);
+      box-shadow: 0 10px 20px rgba(12, 79, 136, 0.12);
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 28px rgba(12, 79, 136, 0.24);
+    }
+
+    button:active {
+      transform: translateY(0);
+      box-shadow: 0 8px 18px rgba(12, 79, 136, 0.2);
+    }
+
+    .document-preview {
+      display: grid;
+      gap: 1.5rem;
+    }
+
+    .sheet {
+      position: relative;
+      background: white;
+      color: #1a2a3a;
+      width: min(100%, var(--sheet-width));
+      margin: 0 auto;
+      padding: 22mm 22mm 28mm;
+      box-shadow: 0 18px 40px rgba(15, 33, 52, 0.12);
+      border-radius: 6px;
+      border: 1px solid rgba(12, 79, 136, 0.12);
+    }
+
+    .document-header {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.2rem;
+      align-items: center;
+      border-bottom: 2px solid #d8e2f1;
+      padding-bottom: 1.2rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .logo-box {
+      width: 100px;
+      height: 100px;
+      border: 2px dashed #aac2d8;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      background: #f6fbff;
+      overflow: hidden;
+    }
+
+    .logo-box img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+
+    .company-details {
+      flex: 1;
+      min-width: 240px;
+      font-size: 0.92rem;
+      color: #27445c;
+      line-height: 1.5;
+    }
+
+    .company-details strong {
+      display: block;
+      font-size: 1.05rem;
+      margin-bottom: 0.35rem;
+      color: var(--primary);
+    }
+
+    .bank-details {
+      margin-top: 0.6rem;
+      padding-top: 0.6rem;
+      border-top: 1px dashed rgba(12, 79, 136, 0.25);
+      font-size: 0.9rem;
+      color: #2b4b63;
+    }
+
+    .document-meta {
+      margin-bottom: 1.2rem;
+      background: #f6f9fc;
+      border-radius: 10px;
+      border: 1px solid rgba(12, 79, 136, 0.1);
+      padding: 0.9rem 1rem;
+    }
+
+    .document-meta dl {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 0.5rem 1.5rem;
+      margin: 0;
+    }
+
+    .document-meta dt {
+      font-weight: 700;
+      color: #12324a;
+      font-size: 0.9rem;
+    }
+
+    .document-meta dd {
+      margin: 0;
+      font-size: 0.9rem;
+      color: #345163;
+    }
+
+    h2.document-title {
+      margin: 0 0 1rem;
+      color: var(--primary);
+      font-size: 1.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .paragraph,
+    .numbered-list li {
+      margin: 0 0 0.8rem;
+      font-size: 0.98rem;
+      text-align: justify;
+    }
+
+    .numbered-list {
+      counter-reset: section;
+      list-style: none;
+      padding-left: 0;
+      margin: 0 0 1.2rem 0;
+    }
+
+    .numbered-list li {
+      counter-increment: section;
+      position: relative;
+      padding-left: 2.2rem;
+    }
+
+    .numbered-list li::before {
+      content: counter(section) ".";
+      position: absolute;
+      left: 0;
+      top: 0;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .signature-block {
+      display: grid;
+      gap: 1.5rem;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      margin-top: 2.5rem;
+    }
+
+    .signature-line {
+      border-top: 1px solid #345163;
+      padding-top: 0.75rem;
+      text-align: center;
+      font-size: 0.9rem;
+      color: #1a2a3a;
+      min-height: 70px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+    }
+
+    .signature-note {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-top: 0.3rem;
+    }
+
+    .actions-card {
+      display: none;
+      background: white;
+      padding: 1.5rem;
+      border-radius: 16px;
+      box-shadow: 0 12px 28px rgba(12, 79, 136, 0.12);
+      border: 1px solid rgba(12, 79, 136, 0.1);
+    }
+
+    .actions-card.active {
+      display: block;
+    }
+
+    .actions-card h3 {
+      margin-top: 0;
+      color: var(--primary);
+    }
+
+    .info-text {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-bottom: 1rem;
+    }
+
+    footer {
+      margin: 3rem 0 2rem;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 720px) {
+      header {
+        text-align: center;
+      }
+
+      .document-header {
+        justify-content: center;
+      }
+
+      .company-details {
+        text-align: center;
+      }
+
+      .sheet {
+        padding: 18mm 16mm 22mm;
+      }
+    }
+
+    @media print {
+      body {
+        background: white;
+      }
+
+      header,
+      .form-card,
+      .actions-card,
+      footer {
+        display: none !important;
+      }
+
+      main {
+        padding: 0;
+        margin: 0;
+      }
+
+      .sheet {
+        margin: 0 auto;
+        box-shadow: none;
+        page-break-after: always;
+        border: none;
+        border-radius: 0;
+      }
+
+      .sheet:last-child {
+        page-break-after: auto;
+      }
+    }
+
+    @page {
+      size: A4;
+      margin: 18mm 16mm 22mm;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Monotours24 – Dokumentenpaket</h1>
+    <p>Erstellen Sie mit wenigen Klicks vollständige Beratungs- und Reiseunterlagen für Ihre Kunden. Laden Sie optional Ihr Logo hoch, wählen Sie die benötigten Dokumente aus und erzeugen Sie sofort ein druckfertiges Paket.</p>
+  </header>
+
+  <main>
+    <section class="form-card" id="form-section">
+      <h2>Kundendaten &amp; Dokumentenauswahl</h2>
+      <form id="document-form">
+        <div class="grid-2">
+          <div>
+            <label for="clientName">Name des Kunden</label>
+            <input type="text" id="clientName" name="clientName" placeholder="Max Mustermann" required />
+          </div>
+          <div>
+            <label for="clientAddress">Adresse</label>
+            <input type="text" id="clientAddress" name="clientAddress" placeholder="Musterstraße 1" required />
+          </div>
+          <div>
+            <label for="clientPostal">PLZ</label>
+            <input type="text" id="clientPostal" name="clientPostal" placeholder="12345" required />
+          </div>
+          <div>
+            <label for="clientCity">Ort</label>
+            <input type="text" id="clientCity" name="clientCity" placeholder="Berlin" required />
+          </div>
+          <div>
+            <label for="accountNumber">Kontonummer</label>
+            <input type="text" id="accountNumber" name="accountNumber" placeholder="DE00 0000 0000 0000 0000 00" />
+          </div>
+          <div>
+            <label for="customerNumber">Kundennummer</label>
+            <input type="text" id="customerNumber" name="customerNumber" placeholder="K-123456" />
+          </div>
+          <div>
+            <label for="date">Datum</label>
+            <input type="date" id="date" name="date" />
+          </div>
+          <div>
+            <label for="logoUpload">Logo hochladen (optional)</label>
+            <input type="file" id="logoUpload" accept="image/*" />
+          </div>
+        </div>
+
+        <div>
+          <label>Dokumentenpaket</label>
+          <div class="checkbox-grid">
+            <label class="checkbox-item">
+              <input type="checkbox" name="documents" value="beratung" checked />
+              Beratungsvertrag
+            </label>
+            <label class="checkbox-item">
+              <input type="checkbox" name="documents" value="vermittlung" />
+              Vermittlungsvertrag
+            </label>
+            <label class="checkbox-item">
+              <input type="checkbox" name="documents" value="agb" />
+              Allgemeine Geschäftsbedingungen (AGB)
+            </label>
+            <label class="checkbox-item">
+              <input type="checkbox" name="documents" value="datenschutz" />
+              Datenschutzerklärung (DSGVO)
+            </label>
+            <label class="checkbox-item">
+              <input type="checkbox" name="documents" value="storno" />
+              Stornobedingungen
+            </label>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button type="submit" class="primary">Paket erzeugen</button>
+          <button type="reset" class="secondary">Formular zurücksetzen</button>
+        </div>
+      </form>
+    </section>
+
+    <section id="preview-section" class="document-preview"></section>
+
+    <section id="package-actions" class="actions-card">
+      <h3>Weiterführende Aktionen</h3>
+      <p class="info-text">Sie können das Paket sofort drucken, in einem neuen Tab öffnen oder als eigenständige HTML-Datei speichern.</p>
+      <div class="actions">
+        <button type="button" class="primary" id="print-all">Alle Dokumente drucken</button>
+        <button type="button" class="secondary" id="open-auto-print">In neuem Tab öffnen (Auto-Druck)</button>
+        <button type="button" class="secondary" id="open-manual-print">In neuem Tab öffnen (manuell drucken)</button>
+        <button type="button" class="secondary" id="download-html">HTML-Datei herunterladen</button>
+        <button type="button" class="secondary" id="back-to-form">Zur Formularbearbeitung</button>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    &copy; <span id="current-year"></span> Monotours24 – Professionelle Reiseberatung.
+  </footer>
+
+  <script>
+    (function () {
+      const form = document.getElementById('document-form');
+      const previewSection = document.getElementById('preview-section');
+      const actionsCard = document.getElementById('package-actions');
+      const printAllBtn = document.getElementById('print-all');
+      const openAutoPrintBtn = document.getElementById('open-auto-print');
+      const openManualPrintBtn = document.getElementById('open-manual-print');
+      const downloadHtmlBtn = document.getElementById('download-html');
+      const backToFormBtn = document.getElementById('back-to-form');
+      const logoUpload = document.getElementById('logoUpload');
+      const styles = document.getElementById('page-styles');
+
+      const state = {
+        logoDataUrl: null,
+        lastPackageHtml: ''
+      };
+
+      document.getElementById('current-year').textContent = new Date().getFullYear();
+
+      logoUpload.addEventListener('change', (event) => {
+        const file = event.target.files && event.target.files[0];
+        if (!file) {
+          state.logoDataUrl = null;
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          state.logoDataUrl = e.target?.result || null;
+        };
+        reader.readAsDataURL(file);
+      });
+
+      form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const formData = new FormData(form);
+        const selectedDocs = formData.getAll('documents');
+
+        if (selectedDocs.length === 0) {
+          alert('Bitte wählen Sie mindestens ein Dokument aus.');
+          return;
+        }
+
+        const data = {
+          clientName: formData.get('clientName')?.toString().trim() || '',
+          clientAddress: formData.get('clientAddress')?.toString().trim() || '',
+          clientPostal: formData.get('clientPostal')?.toString().trim() || '',
+          clientCity: formData.get('clientCity')?.toString().trim() || '',
+          accountNumber: formData.get('accountNumber')?.toString().trim() || '',
+          customerNumber: formData.get('customerNumber')?.toString().trim() || '',
+          date: formData.get('date')?.toString() || '',
+          logo: state.logoDataUrl
+        };
+
+        const documentsHtml = selectedDocs
+          .map((doc) => generateDocument(doc.toString(), data))
+          .join('');
+
+        previewSection.innerHTML = documentsHtml;
+        state.lastPackageHtml = documentsHtml;
+        actionsCard.classList.add('active');
+        previewSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+
+      printAllBtn.addEventListener('click', () => {
+        if (!state.lastPackageHtml) {
+          alert('Bitte erzeugen Sie zunächst ein Dokumentenpaket.');
+          return;
+        }
+        window.print();
+      });
+
+      openAutoPrintBtn.addEventListener('click', () => {
+        openPackageInNewTab(true);
+      });
+
+      openManualPrintBtn.addEventListener('click', () => {
+        openPackageInNewTab(false);
+      });
+
+      downloadHtmlBtn.addEventListener('click', () => {
+        if (!state.lastPackageHtml) {
+          alert('Bitte erzeugen Sie zunächst ein Dokumentenpaket.');
+          return;
+        }
+        const fullHtml = wrapWithHtmlShell(state.lastPackageHtml, styles.innerHTML, false);
+        const blob = new Blob([fullHtml], { type: 'text/html' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'monotours24-dokumentenpaket.html';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      });
+
+      backToFormBtn.addEventListener('click', () => {
+        document.getElementById('form-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+
+      function openPackageInNewTab(autoPrint) {
+        if (!state.lastPackageHtml) {
+          alert('Bitte erzeugen Sie zunächst ein Dokumentenpaket.');
+          return;
+        }
+        const printWindow = window.open('', '_blank', 'noopener');
+        if (!printWindow) {
+          alert('Popup konnte nicht geöffnet werden. Bitte erlauben Sie Popups für diese Seite.');
+          return;
+        }
+        const fullHtml = wrapWithHtmlShell(state.lastPackageHtml, styles.innerHTML, autoPrint);
+        printWindow.document.open();
+        printWindow.document.write(fullHtml);
+        printWindow.document.close();
+      }
+
+      function wrapWithHtmlShell(content, css, autoPrint) {
+        const script = autoPrint
+          ? `<script>window.addEventListener('load', function(){setTimeout(function(){window.print();}, 300);});<\/script>`
+          : '';
+        return `<!DOCTYPE html><html lang="de"><head><meta charset="UTF-8"/><title>Monotours24 – Dokumentenpaket</title><style>${css}</style></head><body><main class="document-preview">${content}</main>${script}</body></html>`;
+      }
+
+      function generateDocument(type, data) {
+        const header = generateHeader(data);
+        const meta = generateMeta(data);
+        switch (type) {
+          case 'beratung':
+            return `<article class="sheet">${header}${meta}${generateBeratungsvertrag(data)}</article>`;
+          case 'vermittlung':
+            return `<article class="sheet">${header}${meta}${generateVermittlungsvertrag(data)}</article>`;
+          case 'agb':
+            return `<article class="sheet">${header}${meta}${generateAgb(data)}</article>`;
+          case 'datenschutz':
+            return `<article class="sheet">${header}${meta}${generateDatenschutz(data)}</article>`;
+          case 'storno':
+            return `<article class="sheet">${header}${meta}${generateStornobedingungen(data)}</article>`;
+          default:
+            return '';
+        }
+      }
+
+      function generateHeader(data) {
+        const logo = data.logo
+          ? `<img src="${data.logo}" alt="Firmenlogo" />`
+          : '<span>Logo</span>';
+
+        return `
+          <header class="document-header">
+            <div class="logo-box">${logo}</div>
+            <div class="company-details">
+              <strong>Monotours24 – Andrii Tiurin</strong>
+              Julian-Marchlewski-Ring, 104<br />
+              16303 Schwedt/Oder, Deutschland<br />
+              Geschäftsführer: Andrii Tiurin<br />
+              Telefon: 01759068548<br />
+              E-Mail: <a href="mailto:Monotours24@gmail.com">Monotours24@gmail.com</a><br />
+              Webseite: <a href="https://monotours24.de" target="_blank" rel="noopener">monotours24.de</a><br />
+              Steuernummer: Ihre Steuernummer<br />
+              USt.-IDNr.: Ihre Umsatzsteuernummer
+              <div class="bank-details">
+                Bank: N26 BANK AG<br />
+                IBAN: DE65100110012345850136<br />
+                BIC/SWIFT: NTSBDEB1XXX
+              </div>
+            </div>
+          </header>
+        `;
+      }
+
+      function generateMeta(data) {
+        return `
+          <section class="document-meta">
+            <dl>
+              <div><dt>Kunde</dt><dd>${escapeHtml(data.clientName)}</dd></div>
+              <div><dt>Adresse</dt><dd>${escapeHtml(data.clientAddress)}</dd></div>
+              <div><dt>PLZ / Ort</dt><dd>${escapeHtml(data.clientPostal)} ${escapeHtml(data.clientCity)}</dd></div>
+              <div><dt>Kundennummer</dt><dd>${escapeHtml(data.customerNumber || '—')}</dd></div>
+              <div><dt>Kontonummer</dt><dd>${escapeHtml(data.accountNumber || '—')}</dd></div>
+              <div><dt>Datum</dt><dd>${formatGermanDate(data.date)}</dd></div>
+            </dl>
+          </section>
+        `;
+      }
+
+      function formatGermanDate(value) {
+        if (!value) return '—';
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) return '—';
+        return date.toLocaleDateString('de-DE', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric'
+        });
+      }
+
+      function escapeHtml(value) {
+        return value
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#039;');
+      }
+
+      function generateSignatureBlock() {
+        return `
+          <section class="signature-block">
+            <div class="signature-line">
+              ${' '.repeat(40)}
+              <span>Unterschrift Kunde</span>
+            </div>
+            <div class="signature-line">
+              ${' '.repeat(40)}
+              <span>Monotours24 – Andrii Tiurin</span>
+            </div>
+            <div class="signature-note">Mit der Unterschrift bestätigen die Parteien die Richtigkeit der Angaben sowie den Erhalt einer Ausfertigung dieses Dokuments.</div>
+          </section>
+        `;
+      }
+
+      function generateBeratungsvertrag() {
+        return `
+          <section>
+            <h2 class="document-title">Beratungsvertrag</h2>
+            <ol class="numbered-list">
+              <li>
+                <strong>Gegenstand der Beratung:</strong> Monotours24 berät den Kunden umfassend zu individuellen Reiseleistungen, einschließlich Auswahl geeigneter Reiseziele, Transportmittel, Unterkünfte und Zusatzleistungen. Die Beratung erfolgt auf Grundlage der vom Kunden zur Verfügung gestellten Informationen.
+              </li>
+              <li>
+                <strong>Vergütung:</strong> Für die Beratungsleistungen erhebt Monotours24 eine pauschale Beratungsgebühr in Höhe von 50,00&nbsp;EUR inklusive gesetzlicher Mehrwertsteuer. Die Gebühr ist mit Unterzeichnung dieses Vertrags fällig.
+              </li>
+              <li>
+                <strong>Haftung:</strong> Monotours24 haftet für Vorsatz und grobe Fahrlässigkeit. Für leichte Fahrlässigkeit haftet Monotours24 nur bei Verletzung wesentlicher Vertragspflichten sowie für Schäden aus der Verletzung des Lebens, des Körpers oder der Gesundheit. Die Haftung für Beratungsfehler beschränkt sich auf den nachgewiesenen Schaden.
+              </li>
+              <li>
+                <strong>Datenschutz:</strong> Die Verarbeitung personenbezogener Daten erfolgt ausschließlich gemäß den Bestimmungen der DSGVO. Einzelheiten ergeben sich aus der beigefügten Datenschutzerklärung.
+              </li>
+              <li>
+                <strong>Schlussbestimmungen:</strong> Änderungen und Ergänzungen dieses Vertrags bedürfen der Schriftform. Sollte eine Bestimmung unwirksam sein, bleibt die Wirksamkeit der übrigen Regelungen unberührt. Es gilt deutsches Recht.
+              </li>
+            </ol>
+            ${generateSignatureBlock()}
+          </section>
+        `;
+      }
+
+      function generateVermittlungsvertrag() {
+        return `
+          <section>
+            <h2 class="document-title">Vermittlungsvertrag</h2>
+            <ol class="numbered-list">
+              <li>
+                <strong>Vermittlungsauftrag:</strong> Monotours24 handelt als Vermittler zwischen dem Kunden und den jeweiligen Leistungsträgern (z.&nbsp;B. Fluggesellschaften, Reiseveranstaltern, Hotels) und übermittelt Buchungsanfragen gemäß den Angaben des Kunden.
+              </li>
+              <li>
+                <strong>Vergütung und Gebühren:</strong> Für erfolgreich vermittelte Buchungen können Servicegebühren entsprechend der jeweils gültigen Preisliste von Monotours24 erhoben werden. Preisbestandteile der Leistungsträger werden dem Kunden transparent ausgewiesen.
+              </li>
+              <li>
+                <strong>Buchung und Stornierung:</strong> Buchungen werden erst verbindlich, sobald der jeweilige Leistungsträger sie bestätigt. Stornierungen richten sich nach den Bedingungen der Leistungsträger und können zusätzliche Gebühren verursachen.
+              </li>
+              <li>
+                <strong>Haftung:</strong> Monotours24 haftet ausschließlich für ordnungsgemäße Vermittlungstätigkeiten. Für die Leistungserbringung der Anbieter haftet der jeweilige Leistungsträger. Ersatzansprüche gegen Monotours24 bleiben auf Vorsatz und grobe Fahrlässigkeit beschränkt.
+              </li>
+              <li>
+                <strong>Gerichtsstand:</strong> Es gilt deutsches Recht. Gerichtsstand für Kaufleute und juristische Personen ist Schwedt/Oder.
+              </li>
+            </ol>
+            ${generateSignatureBlock()}
+          </section>
+        `;
+      }
+
+      function generateAgb() {
+        return `
+          <section>
+            <h2 class="document-title">Allgemeine Geschäftsbedingungen</h2>
+            <ol class="numbered-list">
+              <li>
+                <strong>Geltungsbereich:</strong> Diese Bedingungen gelten für sämtliche Beratungs- und Vermittlungsleistungen von Monotours24 gegenüber Verbrauchern und Unternehmern, sofern keine abweichenden Vereinbarungen getroffen werden.
+              </li>
+              <li>
+                <strong>Leistungen und Preise:</strong> Alle Preise verstehen sich in Euro inklusive der gesetzlichen Mehrwertsteuer, soweit nicht anders ausgewiesen. Änderungen, Druckfehler oder offensichtliche Irrtümer bleiben vorbehalten.
+              </li>
+              <li>
+                <strong>Haftung:</strong> Monotours24 haftet nur für Schäden, die auf vorsätzlichen oder grob fahrlässigen Pflichtverletzungen beruhen. Bei Verletzung wesentlicher Vertragspflichten besteht eine Haftung auch für leichte Fahrlässigkeit, jedoch begrenzt auf den vertragstypischen Schaden.
+              </li>
+              <li>
+                <strong>Höhere Gewalt:</strong> Ereignisse höherer Gewalt (z.&nbsp;B. Naturkatastrophen, politische Unruhen, Pandemien) berechtigen Monotours24, vertragliche Leistungen für die Dauer der Störung auszusetzen. Der Kunde wird unverzüglich informiert.
+              </li>
+              <li>
+                <strong>Datenschutz und Streitbeilegung:</strong> Die Verarbeitung personenbezogener Daten erfolgt gemäß der Datenschutzerklärung. Monotours24 ist weder verpflichtet noch bereit, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.
+              </li>
+            </ol>
+            ${generateSignatureBlock()}
+          </section>
+        `;
+      }
+
+      function generateDatenschutz() {
+        return `
+          <section>
+            <h2 class="document-title">Datenschutzerklärung gemäß DSGVO</h2>
+            <ol class="numbered-list">
+              <li>
+                <strong>Verarbeitete Daten:</strong> Wir verarbeiten Stammdaten (Name, Adresse, Kontaktdaten), Vertrags- und Zahlungsdaten sowie reisebezogene Informationen zur Erfüllung des Kundenauftrags.
+              </li>
+              <li>
+                <strong>Zwecke und Rechtsgrundlagen:</strong> Die Verarbeitung erfolgt zur Vertragserfüllung (Art. 6 Abs. 1 lit. b DSGVO), zur Erfüllung rechtlicher Verpflichtungen (Art. 6 Abs. 1 lit. c DSGVO) sowie auf Basis berechtigter Interessen (Art. 6 Abs. 1 lit. f DSGVO) für interne Verwaltungszwecke.
+              </li>
+              <li>
+                <strong>Empfänger:</strong> Daten werden nur an beteiligte Leistungsträger und Dienstleister übermittelt, soweit dies für die Abwicklung erforderlich ist. Eine Übermittlung in Drittstaaten erfolgt ausschließlich bei entsprechender Notwendigkeit und unter Einhaltung der DSGVO-Vorgaben.
+              </li>
+              <li>
+                <strong>Speicherdauer:</strong> Personenbezogene Daten werden für die Dauer der gesetzlichen Aufbewahrungsfristen gespeichert und anschließend gelöscht, sofern keine weiteren berechtigten Interessen bestehen.
+              </li>
+              <li>
+                <strong>Rechte der Betroffenen:</strong> Kunden haben das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung, Datenübertragbarkeit sowie Widerspruch. Beschwerden können bei einer Aufsichtsbehörde eingereicht werden.
+              </li>
+              <li>
+                <strong>Einwilligung:</strong> Soweit einzelne Verarbeitungstätigkeiten auf Einwilligungen beruhen, kann diese jederzeit mit Wirkung für die Zukunft widerrufen werden.
+              </li>
+            </ol>
+            <p class="paragraph"><strong>Einverständniserklärung:</strong> Ich habe die Datenschutzerklärung zur Kenntnis genommen und willige in die beschriebene Verarbeitung meiner personenbezogenen Daten ein.</p>
+            ${generateSignatureBlock()}
+          </section>
+        `;
+      }
+
+      function generateStornobedingungen() {
+        return `
+          <section>
+            <h2 class="document-title">Stornobedingungen</h2>
+            <ol class="numbered-list">
+              <li>
+                <strong>Allgemeine Regeln:</strong> Stornierungen sind schriftlich bei Monotours24 einzureichen. Maßgeblich ist das Eingangsdatum der Erklärung. Bereits angefallene Servicegebühren werden nicht erstattet.
+              </li>
+              <li>
+                <strong>Nicht erstattungsfähige Leistungen:</strong> Ticket-, Visa- und Bearbeitungsgebühren gelten als nicht erstattungsfähig, sofern der Leistungsträger nichts anderes vorsieht.
+              </li>
+              <li>
+                <strong>Bedingungen der Leistungsträger:</strong> Es gelten die Storno- und Umbuchungsbedingungen der jeweiligen Reiseanbieter. Zusätzliche Kosten werden dem Kunden belastet.
+              </li>
+              <li>
+                <strong>Rückerstattungen:</strong> Etwaige Rückerstattungen erfolgen nach Eingang der Rückzahlung durch den Leistungsträger abzüglich fälliger Gebühren und Kosten.
+              </li>
+              <li>
+                <strong>Höhere Gewalt:</strong> Bei Ereignissen höherer Gewalt bemüht sich Monotours24 um kulante Lösungen. Ein Rechtsanspruch auf Erstattung besteht jedoch nur im Rahmen der gesetzlichen Vorschriften und Bedingungen der Leistungsträger.
+              </li>
+              <li>
+                <strong>Gerichtsstand:</strong> Es gilt deutsches Recht. Gerichtsstand für Kaufleute und juristische Personen ist Schwedt/Oder.
+              </li>
+            </ol>
+            ${generateSignatureBlock()}
+          </section>
+        `;
+      }
+    })();
+  </script>
 </body>
 </html>
