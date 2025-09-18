@@ -1,15 +1,615 @@
 <!DOCTYPE html>
-<html lang="uk">
-<!-- ... остальной код остается без изменений ... -->
-
-<footer>
-  <div class="container">
-    <div class="footer-content">
-      <p>&copy; 2023 MonoTours. Всі права захищені.</p>
-      <p class="author">Розробник: <span>Andrii Tiurin</span></p>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Monotours24 – Premium Reiseportal für Deutschland</title>
+    <meta
+      name="description"
+      content="Monotours24 ist Ihr Reiseportal für Last Minute Angebote, individuelle Pauschalreisen, Flüge, Hotels und B2B-Lösungen für Reisebüros und Firmen."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <script type="module" src="main.js"></script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "TravelAgency",
+        "name": "Monotours24",
+        "image": "https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?auto=format&fit=crop&w=1200&q=80",
+        "url": "https://monotours24.de",
+        "telephone": "+49 175 9068548",
+        "email": "Monotours24@gmail.com",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "Julian-Marchlewski-Ring 104",
+          "addressLocality": "Schwedt/Oder",
+          "postalCode": "16303",
+          "addressCountry": "DE"
+        },
+        "founder": "Andrii Tiurin",
+        "priceRange": "€€",
+        "areaServed": "Deutschland",
+        "openingHoursSpecification": {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": [
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday"
+          ],
+          "opens": "09:00",
+          "closes": "18:00"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div class="cookie-banner" id="cookie-banner" role="dialog" aria-live="polite">
+      <div class="cookie-content">
+        <p>
+          Wir verwenden Cookies, um Ihre Nutzererfahrung zu verbessern und anonyme
+          Statistiken zu erheben. Sie können Ihre Einstellungen jederzeit anpassen.
+        </p>
+        <div class="cookie-actions">
+          <button class="btn btn-secondary" id="cookie-settings">Einstellungen</button>
+          <button class="btn" id="cookie-accept">Alle akzeptieren</button>
+        </div>
+      </div>
     </div>
-  </div>
-</footer>
 
-</body>
+    <header class="top-bar">
+      <div class="container">
+        <div class="top-bar-left">
+          <span><strong>Hotline:</strong> 0175 906 8548</span>
+          <span><strong>WhatsApp:</strong> +49 175 906 8548</span>
+          <span><strong>E-Mail:</strong> Monotours24@gmail.com</span>
+        </div>
+        <div class="top-bar-right">
+          <button class="language-switch" aria-label="Sprache wechseln">
+            Deutsch <span class="tag">EN demnächst</span>
+          </button>
+          <a class="top-link" href="#kunden-login">Kunden-Login</a>
+          <a class="top-link" href="#b2b">Partnerbereich</a>
+        </div>
+      </div>
+    </header>
+
+    <header class="main-header">
+      <div class="container">
+        <div class="logo" aria-label="Monotours24 Logo">
+          <span class="logo-icon">✈️</span>
+          <span class="logo-text">Monotours24</span>
+        </div>
+        <nav class="main-nav" aria-label="Hauptnavigation">
+          <button class="nav-toggle" aria-expanded="false" aria-controls="primary-menu">
+            <span></span><span></span><span></span>
+          </button>
+          <ul id="primary-menu">
+            <li><a href="#start">Startseite</a></li>
+            <li><a href="#angebote">Angebote</a></li>
+            <li><a href="#fluege">Flüge</a></li>
+            <li><a href="#hotels">Hotels</a></li>
+            <li><a href="#transfers">Transfers</a></li>
+            <li><a href="#pakete">Pakete</a></li>
+            <li><a href="#b2b">Geschäftskunden</a></li>
+            <li><a href="#ueber-uns">Über uns</a></li>
+            <li><a href="#kontakt">Kontakt</a></li>
+          </ul>
+        </nav>
+        <a class="btn btn-cta" href="#angebote">Jetzt Angebot sichern</a>
+      </div>
+    </header>
+
+    <main id="start">
+      <section class="hero" aria-label="Top Reiseangebote">
+        <div class="hero-slider" id="hero-slider" role="region" aria-live="polite"></div>
+        <div class="hero-controls" aria-label="Hero Navigation">
+          <button class="control" id="slider-prev" aria-label="Vorheriges Angebot">‹</button>
+          <button class="control" id="slider-next" aria-label="Nächstes Angebot">›</button>
+        </div>
+        <div class="hero-trust">
+          <div class="trust-item">
+            <span class="trust-icon">⭐</span>
+            <p>Über 20 Jahre Erfahrung</p>
+          </div>
+          <div class="trust-item">
+            <span class="trust-icon">🤝</span>
+            <p>1.200+ Partner weltweit</p>
+          </div>
+          <div class="trust-item">
+            <span class="trust-icon">💳</span>
+            <p>Sichere Zahlung mit PayPal, Kreditkarte & SEPA</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="quick-search" aria-labelledby="quick-search-heading">
+        <div class="container">
+          <div class="section-heading">
+            <p class="eyebrow">Schnellsuche</p>
+            <h2 id="quick-search-heading">Ihr Traumurlaub in wenigen Klicks</h2>
+          </div>
+          <div class="search-tabs" role="tablist">
+            <button class="search-tab active" data-target="flight-search" role="tab">
+              Flüge
+            </button>
+            <button class="search-tab" data-target="hotel-search" role="tab">
+              Hotels
+            </button>
+            <button class="search-tab" data-target="package-search" role="tab">
+              Pauschalreisen
+            </button>
+          </div>
+          <div class="search-forms">
+            <form id="flight-search" class="search-form active" aria-label="Flugsuche">
+              <div class="form-group">
+                <label for="flight-from">Abflughafen</label>
+                <input type="text" id="flight-from" placeholder="z.B. Berlin (BER)" required name="flight-from">
+              </div>
+              <div class="form-group">
+                <label for="flight-to">Zielort</label>
+                <input type="text" id="flight-to" placeholder="z.B. Mallorca" required name="flight-to">
+              </div>
+              <div class="form-group">
+                <label for="flight-date">Abflugdatum</label>
+                <input type="date" id="flight-date" required name="flight-date">
+              </div>
+              <div class="form-group">
+                <label for="flight-return">Rückflug</label>
+                <input type="date" id="flight-return" name="flight-return">
+              </div>
+              <div class="form-group">
+                <label for="flight-pax">Reisende</label>
+                <input type="number" id="flight-pax" min="1" value="2" name="flight-pax">
+              </div>
+              <button type="submit" class="btn">Jetzt Flüge finden</button>
+            </form>
+
+            <form id="hotel-search" class="search-form" aria-label="Hotelsuche">
+              <div class="form-group">
+                <label for="hotel-city">Stadt oder Region</label>
+                <input type="text" id="hotel-city" placeholder="z.B. Dubai" name="hotel-city">
+              </div>
+              <div class="form-group">
+                <label for="hotel-checkin">Check-In</label>
+                <input type="date" id="hotel-checkin" name="hotel-checkin">
+              </div>
+              <div class="form-group">
+                <label for="hotel-checkout">Check-Out</label>
+                <input type="date" id="hotel-checkout" name="hotel-checkout">
+              </div>
+              <div class="form-group">
+                <label for="hotel-guests">Gäste</label>
+                <input type="number" id="hotel-guests" min="1" value="2" name="hotel-guests">
+              </div>
+              <div class="form-group">
+                <label for="hotel-rating">Hotelkategorie</label>
+                <select id="hotel-rating" name="hotel-rating">
+                  <option>Beliebig</option>
+                  <option>3 Sterne</option>
+                  <option>4 Sterne</option>
+                  <option>5 Sterne</option>
+                </select>
+              </div>
+              <button type="submit" class="btn">Hotels anzeigen</button>
+            </form>
+
+            <form id="package-search" class="search-form" aria-label="Paketsuche">
+              <div class="form-group">
+                <label for="package-destination">Reiseziel</label>
+                <input type="text" id="package-destination" placeholder="z.B. Griechenland" name="package-destination">
+              </div>
+              <div class="form-group">
+                <label for="package-airport">Abflughafen</label>
+                <input type="text" id="package-airport" placeholder="z.B. München" name="package-airport">
+              </div>
+              <div class="form-group">
+                <label for="package-duration">Reisedauer</label>
+                <select id="package-duration" name="package-duration">
+                  <option>3-4 Nächte</option>
+                  <option>5-7 Nächte</option>
+                  <option>8-14 Nächte</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="package-budget">Budget pro Person</label>
+                <input type="number" id="package-budget" placeholder="€ 899" name="package-budget">
+              </div>
+              <button type="submit" class="btn">Paket anfragen</button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <section class="hot-deals" id="angebote" aria-labelledby="hot-deals-heading">
+        <div class="container">
+          <div class="section-heading">
+            <p class="eyebrow">Last Minute &amp; Hot Deals</p>
+            <h2 id="hot-deals-heading">Jetzt buchen und bis zu 40% sparen</h2>
+            <p>Jeden Tag frisch verhandelte Kontingente, flexibel umbuchbar und mit Preisgarantie.</p>
+          </div>
+          <div class="deal-grid" id="deal-grid"></div>
+        </div>
+      </section>
+
+      <section class="services" id="fluege" aria-labelledby="services-heading">
+        <div class="container">
+          <div class="section-heading">
+            <p class="eyebrow">Services für Privatkunden</p>
+            <h2 id="services-heading">Rundum-sorglos-Reisen mit Monotours24</h2>
+          </div>
+          <div class="service-grid" id="service-grid"></div>
+        </div>
+      </section>
+
+      <section class="hotel-showcase" id="hotels" aria-labelledby="hotel-heading">
+        <div class="container">
+          <div class="section-heading">
+            <p class="eyebrow">Premium Hotels</p>
+            <h2 id="hotel-heading">Kuratiert von Experten – mit klarer Preistransparenz</h2>
+          </div>
+          <div class="hotel-filter">
+            <label for="hotel-filter-select">Filtern nach Kategorie:</label>
+            <select id="hotel-filter-select" name="hotel-filter-select">
+              <option value="alle">Alle Hotels</option>
+              <option value="city">Städtereisen</option>
+              <option value="beach">Strandurlaub</option>
+              <option value="luxury">Luxus &amp; Wellness</option>
+            </select>
+          </div>
+          <div class="hotel-grid" id="hotel-grid"></div>
+        </div>
+      </section>
+
+      <section class="package-highlight" id="pakete" aria-labelledby="package-heading">
+        <div class="container">
+          <div class="section-heading">
+            <p class="eyebrow">Beliebte Pauschalreisen</p>
+            <h2 id="package-heading">Flexibel kombinierbare Reisebausteine</h2>
+          </div>
+          <div class="package-grid" id="package-grid"></div>
+          <div class="package-cta">
+            <h3>Individuelle Wunschreise?</h3>
+            <p>
+              Unsere Reiseberater erstellen ein maßgeschneidertes Angebot innerhalb von 24 Stunden – inklusive Flug,
+              Hotel, Transfers und Reiseversicherung.
+            </p>
+            <a class="btn" href="#kontakt">Beratung anfordern</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="transfer-services" id="transfers" aria-labelledby="transfer-heading">
+        <div class="container">
+          <div class="section-heading">
+            <p class="eyebrow">Transfers &amp; Mobilität</p>
+            <h2 id="transfer-heading">Vom Flughafen bis zum Hotel – alles aus einer Hand</h2>
+          </div>
+          <div class="transfer-grid" id="transfer-grid"></div>
+        </div>
+      </section>
+
+      <section class="customer-portal" id="kunden-login" aria-labelledby="customer-heading">
+        <div class="container">
+          <div class="customer-content">
+            <div class="customer-info">
+              <p class="eyebrow">Digitales Kundencenter</p>
+              <h2 id="customer-heading">Alle Buchungen &amp; Zahlungen im Blick</h2>
+              <ul class="checklist">
+                <li>Buchungshistorie &amp; Zahlstatus jederzeit abrufbar</li>
+                <li>Online-Zahlung per PayPal, Kreditkarte oder SEPA-Lastschrift</li>
+                <li>Reiseunterlagen &amp; Check-in Links in Ihrem persönlichen Bereich</li>
+                <li>24/7-Notfallkontakt via WhatsApp &amp; Telegram</li>
+              </ul>
+              <div class="customer-actions">
+                <a class="btn" href="#login-modal" data-open-modal="login-modal">Zum Kunden-Login</a>
+                <a class="btn btn-secondary" href="#kontakt">Jetzt registrieren</a>
+              </div>
+            </div>
+            <form class="customer-form" id="customer-login-form" aria-label="Demo Kunden-Login">
+              <h3>Demo-Login</h3>
+              <div class="form-group">
+                <label for="customer-email">E-Mail</label>
+                <input type="email" id="customer-email" placeholder="kunde@monotours24.de" required name="customer-email">
+              </div>
+              <div class="form-group">
+                <label for="customer-password">Passwort</label>
+                <input type="password" id="customer-password" placeholder="••••••" required name="customer-password">
+              </div>
+              <button type="submit" class="btn">Einloggen</button>
+              <p class="form-hint">Demo-Daten: kunde@monotours24.de / reisen2024</p>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <section class="b2b" id="b2b" aria-labelledby="b2b-heading">
+        <div class="container">
+          <div class="section-heading">
+            <p class="eyebrow">Geschäftskunden &amp; Agenturen</p>
+            <h2 id="b2b-heading">Monotours24 Partnerhub – Ihr Vorteil im B2B-Vertrieb</h2>
+          </div>
+          <div class="b2b-content">
+            <div class="b2b-features">
+              <article class="b2b-card">
+                <h3>Partner Login Portal</h3>
+                <p>Exklusive Nettoraten, Provisionen in Echtzeit und Buchungsübersicht für Agenturen.</p>
+              </article>
+              <article class="b2b-card">
+                <h3>Dashboards &amp; Reporting</h3>
+                <p>KPIs zu Umsatz, Conversion und Stornoquote – exportierbar als CSV oder PDF.</p>
+              </article>
+              <article class="b2b-card">
+                <h3>White-Label Lösungen</h3>
+                <p>Eigene Markenoberfläche mit Ihren CI-Farben, Payment-Lösungen und Domains.</p>
+              </article>
+              <article class="b2b-card">
+                <h3>API &amp; Webhooks</h3>
+                <p>REST &amp; GraphQL Schnittstellen für Live-Verfügbarkeiten, Preisupdates und Buchungsanlage.</p>
+              </article>
+            </div>
+            <form class="b2b-form" id="partner-request" aria-label="Partneranfrage">
+              <h3>Jetzt B2B-Zugang anfragen</h3>
+              <div class="form-group">
+                <label for="partner-company">Unternehmen</label>
+                <input type="text" id="partner-company" placeholder="Firmenname" required name="partner-company">
+              </div>
+              <div class="form-group">
+                <label for="partner-contact">Kontaktperson</label>
+                <input type="text" id="partner-contact" placeholder="Vor- &amp; Nachname" required name="partner-contact">
+              </div>
+              <div class="form-group">
+                <label for="partner-email">Business E-Mail</label>
+                <input type="email" id="partner-email" placeholder="partner@unternehmen.de" required name="partner-email">
+              </div>
+              <div class="form-group">
+                <label for="partner-type">Interesse</label>
+                <select id="partner-type" required name="partner-type">
+                  <option value="reisebuero">Reisebüro &amp; OTA</option>
+                  <option value="corporate">Corporate Travel</option>
+                  <option value="affiliate">Affiliate / Influencer</option>
+                  <option value="whitelabel">White-Label</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="partner-message">Nachricht</label>
+                <textarea id="partner-message" rows="3" placeholder="Beschreiben Sie Ihre Anforderungen" name="partner-message"></textarea>
+              </div>
+              <button type="submit" class="btn">Anfrage senden</button>
+              <p class="form-hint">Wir melden uns innerhalb eines Werktages.</p>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <section class="api-access" aria-labelledby="api-heading">
+        <div class="container">
+          <div class="api-content">
+            <div>
+              <p class="eyebrow">Entwicklerbereich</p>
+              <h2 id="api-heading">API &amp; Integrationen</h2>
+              <p>
+                Unsere Plattform ist NDC- und GDS-ready. Nutzen Sie unsere Sandbox, um Flug- und Hotelinventare in Ihre
+                Systeme zu integrieren. Beispiele für REST- und GraphQL-Endpunkte stehen nach Registrierung zur
+                Verfügung.
+              </p>
+              <ul class="checklist">
+                <li>OAuth 2.0 Authentifizierung &amp; JSON Web Tokens</li>
+                <li>Webhook-Benachrichtigungen bei Buchungsänderungen</li>
+                <li>SDKs für JavaScript, PHP &amp; .NET in Vorbereitung</li>
+              </ul>
+            </div>
+            <div class="api-card">
+              <h3>Sandbox Zugang</h3>
+              <pre><code>POST /v1/token
+GET  /v1/flights/search
+GET  /v1/hotels/offers
+POST /v1/bookings</code></pre>
+              <a class="btn btn-secondary" href="#kontakt">Dokumentation anfordern</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="about" id="ueber-uns" aria-labelledby="about-heading">
+        <div class="container">
+          <div class="section-heading">
+            <p class="eyebrow">Über Monotours24</p>
+            <h2 id="about-heading">Ihr Reiseexperte mit persönlicher Betreuung</h2>
+          </div>
+          <div class="about-grid">
+            <div class="about-text">
+              <p>
+                Monotours24 kombiniert persönliche Beratung mit digitaler Expertise. Wir arbeiten mit führenden
+                Veranstaltern, Airlines und Hotelketten zusammen, um maßgeschneiderte Reisen für Privat- und
+                Geschäftskunden zu gestalten.
+              </p>
+              <ul class="checklist">
+                <li>Individuelle Reiseplanung für Familien, Paare und Gruppen</li>
+                <li>Corporate Travel Management &amp; Incentive-Reisen</li>
+                <li>Eigenes Netzwerk aus Reiseleitern und Servicepartnern</li>
+                <li>Transparente Beratung – keine versteckten Kosten</li>
+              </ul>
+            </div>
+            <div class="about-stats">
+              <div class="stat-card">
+                <span class="stat-value" data-target="2800">0</span>
+                <p>zufriedene Reisende in 2023</p>
+              </div>
+              <div class="stat-card">
+                <span class="stat-value" data-target="97">0</span>
+                <p>Kundenzufriedenheit in %</p>
+              </div>
+              <div class="stat-card">
+                <span class="stat-value" data-target="45">0</span>
+                <p>exklusive Airline-Partner</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="blog" aria-labelledby="blog-heading">
+        <div class="container">
+          <div class="section-heading">
+            <p class="eyebrow">News &amp; Inspiration</p>
+            <h2 id="blog-heading">Reisetrends, Visa-Updates &amp; Saison-Highlights</h2>
+          </div>
+          <div class="blog-grid" id="blog-grid"></div>
+        </div>
+      </section>
+
+      <section class="newsletter" aria-labelledby="newsletter-heading">
+        <div class="container newsletter-container">
+          <div>
+            <p class="eyebrow">Newsletter</p>
+            <h2 id="newsletter-heading">Keinen Deal mehr verpassen</h2>
+            <p>Erhalten Sie wöchentlich exklusive Angebote, Insider-Tipps und saisonale Empfehlungen.</p>
+          </div>
+          <form id="newsletter-form" class="newsletter-form">
+            <label class="sr-only" for="newsletter-email">E-Mail-Adresse</label>
+            <input type="email" id="newsletter-email" placeholder="Ihre E-Mail-Adresse" required name="newsletter-email">
+            <button type="submit" class="btn">Anmelden</button>
+            <p class="form-hint">Sie können sich jederzeit mit nur einem Klick wieder abmelden.</p>
+          </form>
+        </div>
+      </section>
+
+      <section class="contact" id="kontakt" aria-labelledby="contact-heading">
+        <div class="container">
+          <div class="section-heading">
+            <p class="eyebrow">Kontakt</p>
+            <h2 id="contact-heading">Sprechen Sie mit unseren Reiseexperten</h2>
+          </div>
+          <div class="contact-grid">
+            <div class="contact-details">
+              <h3>Monotours24 – Andrii Tiurin</h3>
+              <p>Julian-Marchlewski-Ring 104, 16303 Schwedt/Oder, Deutschland</p>
+              <ul>
+                <li><strong>Telefon:</strong> 0175 906 8548</li>
+                <li><strong>E-Mail:</strong> Monotours24@gmail.com</li>
+                <li><strong>Web:</strong> monotours24.de</li>
+              </ul>
+              <div class="contact-channels">
+                <a class="contact-bubble whatsapp" href="https://wa.me/491759068548" target="_blank" rel="noopener">WhatsApp</a>
+                <a class="contact-bubble telegram" href="https://t.me/monotours24" target="_blank" rel="noopener">Telegram</a>
+                <a class="contact-bubble phone" href="tel:+491759068548">Anrufen</a>
+              </div>
+              <div class="office-hours">
+                <h4>Servicezeiten</h4>
+                <p>Mo–Fr 09:00 – 18:00 Uhr · Sa 10:00 – 14:00 Uhr</p>
+              </div>
+            </div>
+            <form class="contact-form" id="contact-form" aria-label="Kontaktformular">
+              <h3>Ihre Anfrage</h3>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="contact-name">Name</label>
+                  <input type="text" id="contact-name" required name="contact-name">
+                </div>
+                <div class="form-group">
+                  <label for="contact-email">E-Mail</label>
+                  <input type="email" id="contact-email" required name="contact-email">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="contact-phone">Telefon</label>
+                  <input type="tel" id="contact-phone" name="contact-phone">
+                </div>
+                <div class="form-group">
+                  <label for="contact-topic">Thema</label>
+                  <select id="contact-topic" name="contact-topic">
+                    <option>Allgemeine Anfrage</option>
+                    <option>Buchung</option>
+                    <option>Partnerschaft</option>
+                    <option>Service &amp; Support</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="contact-message">Nachricht</label>
+                <textarea id="contact-message" rows="4" placeholder="Wie können wir helfen?" required name="contact-message"></textarea>
+              </div>
+              <label class="checkbox">
+                <input type="checkbox" id="contact-privacy" required name="contact-privacy">
+                <span>Ich stimme der Verarbeitung meiner Daten gemäß Datenschutzerklärung zu.</span>
+              </label>
+              <button type="submit" class="btn">Anfrage senden</button>
+            </form>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div class="floating-contact">
+      <a href="https://wa.me/491759068548" class="floating-btn whatsapp" target="_blank" rel="noopener" aria-label="WhatsApp Chat">💬</a>
+      <a href="tel:+491759068548" class="floating-btn phone" aria-label="Jetzt anrufen">📞</a>
+    </div>
+
+    <footer class="footer">
+      <div class="container footer-container">
+        <div class="footer-brand">
+          <span class="logo-icon">✈️</span>
+          <span class="logo-text">Monotours24</span>
+          <p>Ihr Reiseportal für Traumreisen, Geschäftsreisen und maßgeschneiderte Angebote.</p>
+        </div>
+        <div class="footer-columns">
+          <div class="footer-column">
+            <h4>Leistungen</h4>
+            <ul>
+              <li><a href="#angebote">Last Minute Angebote</a></li>
+              <li><a href="#fluege">Flugsuche</a></li>
+              <li><a href="#hotels">Hotelübersicht</a></li>
+              <li><a href="#pakete">Pauschalreisen</a></li>
+            </ul>
+          </div>
+          <div class="footer-column">
+            <h4>Geschäftskunden</h4>
+            <ul>
+              <li><a href="#b2b">Partnerportal</a></li>
+              <li><a href="#b2b">White-Label Lösungen</a></li>
+              <li><a href="#b2b">API &amp; Schnittstellen</a></li>
+            </ul>
+          </div>
+          <div class="footer-column">
+            <h4>Informationen</h4>
+            <ul>
+              <li><a href="#ueber-uns">Über uns</a></li>
+              <li><a href="#blog-heading">Reiseblog</a></li>
+              <li><a href="#kontakt">Kontakt</a></li>
+            </ul>
+          </div>
+          <div class="footer-column">
+            <h4>Rechtliches</h4>
+            <ul>
+              <li><a href="#impressum" data-open-modal="impressum">Impressum</a></li>
+              <li><a href="#datenschutz" data-open-modal="datenschutz">Datenschutzerklärung</a></li>
+              <li><a href="#agb" data-open-modal="agb">AGB</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div class="container">
+          <p>© <span id="current-year"></span> Monotours24 – Andrii Tiurin. Alle Rechte vorbehalten.</p>
+          <p>Steuernummer: [Placeholder] · USt.-IDNr.: [Placeholder]</p>
+        </div>
+      </div>
+    </footer>
+
+    <div class="modal-overlay" id="modal-overlay" aria-hidden="true">
+      <div class="modal-window" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <button class="modal-close" id="modal-close" aria-label="Fenster schließen">×</button>
+        <div class="modal-content" id="modal-content"></div>
+      </div>
+    </div>
+  </body>
 </html>

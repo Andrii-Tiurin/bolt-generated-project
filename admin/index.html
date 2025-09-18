@@ -1,5 +1,33 @@
-<!-- Добавьте новую секцию для заказов в админ-панель -->
-<div id="bookings-section" class="section" style="display: none;">
-  <h2>Заявки на бронювання</h2>
-  <div id="bookings-list"></div>
-</div>
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Monotours24 Admin Panel</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Poppins:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/admin/app.css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "react": "https://esm.sh/react@18.2.0?dev",
+          "react-dom": "https://esm.sh/react-dom@18.2.0?dev",
+          "react-dom/client": "https://esm.sh/react-dom@18.2.0/client?dev",
+          "react-router-dom": "https://esm.sh/react-router-dom@6.15.0?dev",
+          "react-router": "https://esm.sh/react-router@6.15.0?dev",
+          "history": "https://esm.sh/history@5.3.0?dev",
+          "react/jsx-runtime": "https://esm.sh/react@18.2.0/jsx-runtime?dev",
+          "react/jsx-dev-runtime": "https://esm.sh/react@18.2.0/jsx-dev-runtime?dev"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/admin/app.js"></script>
+  </body>
+</html>
