@@ -3,261 +3,29 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Monotours24 Admin Demo</title>
+    <title>Monotours24 Admin Panel</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Poppins:wght@300;400;500;600&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="style.css" />
-    <script defer src="admin.js"></script>
+    <link rel="stylesheet" href="/admin/app.css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "react": "https://esm.sh/react@18.2.0?dev",
+          "react-dom": "https://esm.sh/react-dom@18.2.0?dev",
+          "react-dom/client": "https://esm.sh/react-dom@18.2.0/client?dev",
+          "react-router-dom": "https://esm.sh/react-router-dom@6.15.0?dev",
+          "react-router": "https://esm.sh/react-router@6.15.0?dev",
+          "history": "https://esm.sh/history@5.3.0?dev"
+        }
+      }
+    </script>
   </head>
   <body>
-    <div class="login-screen" id="login-screen">
-      <div class="login-panel">
-        <div class="login-brand">
-          <span class="logo-icon">✈️</span>
-          <span class="logo-text">Monotours24</span>
-        </div>
-        <h1>Admin &amp; Agentur Portal</h1>
-        <p class="login-copy">
-          Demo-Zugang für Reiseberater:innen und Partneragenturen. Verwenden Sie die folgenden Zugangsdaten, um einen
-          Eindruck vom Backoffice zu erhalten.
-        </p>
-        <form id="admin-login-form" class="login-form">
-          <div class="form-group">
-            <label for="admin-email">E-Mail</label>
-            <input type="email" id="admin-email" value="admin@monotours24.de" required />
-          </div>
-          <div class="form-group">
-            <label for="admin-password">Passwort</label>
-            <input type="password" id="admin-password" value="admin123" required />
-          </div>
-          <button type="submit" class="btn">Anmelden</button>
-          <p class="form-hint">Demo-Zugang: admin@monotours24.de · admin123</p>
-        </form>
-      </div>
-    </div>
-
-    <div class="admin-app" id="admin-app" hidden>
-      <aside class="sidebar">
-        <div class="sidebar-header">
-          <div class="brand">
-            <span class="logo-icon">✈️</span>
-            <span class="logo-text">Monotours24 Admin</span>
-          </div>
-          <button class="sidebar-toggle" id="sidebar-toggle" aria-label="Menü umschalten">☰</button>
-        </div>
-        <nav class="sidebar-nav">
-          <a href="#dashboard" class="nav-link active" data-nav>Dashboard</a>
-          <a href="#offers" class="nav-link" data-nav>Angebote</a>
-          <a href="#bookings" class="nav-link" data-nav>Buchungen</a>
-          <a href="#partners" class="nav-link" data-nav>Partner &amp; B2B</a>
-          <a href="#settings" class="nav-link" data-nav>Einstellungen</a>
-        </nav>
-        <div class="sidebar-footer">
-          <p>Angemeldet als <strong id="admin-user">admin@monotours24.de</strong></p>
-          <button class="btn btn-secondary" id="logout-btn">Abmelden</button>
-        </div>
-      </aside>
-
-      <main class="main-panel">
-        <header class="main-header">
-          <div>
-            <h1 id="section-title">Dashboard</h1>
-            <p class="subtitle">Überblick über aktuelle Buchungen, Leads und Angebote.</p>
-          </div>
-          <div class="status-badge">Demo Modus</div>
-        </header>
-
-        <section id="dashboard" class="panel-section active" aria-label="Dashboard">
-          <div class="stats-grid">
-            <article class="stat-card">
-              <h3>Neue Buchungen</h3>
-              <p class="stat-value" id="stat-bookings">0</p>
-              <span>offene Anfragen in Bearbeitung</span>
-            </article>
-            <article class="stat-card">
-              <h3>Partner Leads</h3>
-              <p class="stat-value" id="stat-partners">0</p>
-              <span>neue Agentur-Registrierungen</span>
-            </article>
-            <article class="stat-card">
-              <h3>Aktive Angebote</h3>
-              <p class="stat-value" id="stat-offers">0</p>
-              <span>Hot Deals &amp; Pauschalen online</span>
-            </article>
-            <article class="stat-card">
-              <h3>Newsletter Opt-ins</h3>
-              <p class="stat-value" id="stat-newsletter">0</p>
-              <span>Interessenten für Marketing</span>
-            </article>
-          </div>
-
-          <div class="dashboard-panels">
-            <div class="panel">
-              <h3>Letzte Buchungsanfragen</h3>
-              <ul id="latest-bookings" class="activity-list"></ul>
-            </div>
-            <div class="panel">
-              <h3>Systemhinweis</h3>
-              <p>
-                Diese Demo-Version speichert Daten lokal im Browser (LocalStorage). Für das produktive System ist eine
-                Anbindung an CRM / Mid- &amp; Backoffice-Systeme (z. B. Bistro, JackPlus, Midoco) vorgesehen.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        <section id="offers" class="panel-section" aria-label="Angebotsverwaltung">
-          <div class="panel-heading">
-            <div>
-              <h2>Hot Deals &amp; Pakete verwalten</h2>
-              <p>Pflegen Sie Last Minute Aktionen, Preise und Reisedetails.</p>
-            </div>
-            <button class="btn" id="sync-offers">Live-Daten abrufen</button>
-          </div>
-          <div class="panel-grid">
-            <div class="panel">
-              <form id="offer-form" class="form-grid">
-                <div class="form-group">
-                  <label for="offer-title">Titel</label>
-                  <input id="offer-title" required placeholder="z. B. Dubai Deluxe Week" />
-                </div>
-                <div class="form-group">
-                  <label for="offer-destination">Reiseziel</label>
-                  <input id="offer-destination" required placeholder="Land / Stadt" />
-                </div>
-                <div class="form-group">
-                  <label for="offer-price">Preis ab (EUR)</label>
-                  <input id="offer-price" type="number" min="0" step="50" required />
-                </div>
-                <div class="form-group">
-                  <label for="offer-valid">Gültig bis</label>
-                  <input id="offer-valid" type="date" required />
-                </div>
-                <div class="form-group form-group-full">
-                  <label for="offer-notes">Leistungen / Hinweise</label>
-                  <textarea id="offer-notes" rows="3" placeholder="Inklusivleistungen, Vorteile"></textarea>
-                </div>
-                <button type="submit" class="btn">Angebot speichern</button>
-              </form>
-            </div>
-            <div class="panel">
-              <table class="data-table" aria-label="Angebotsliste">
-                <thead>
-                  <tr>
-                    <th>Titel</th>
-                    <th>Ziel</th>
-                    <th>Preis ab</th>
-                    <th>Gültig bis</th>
-                    <th>Status</th>
-                  </tr>
-                </thead>
-                <tbody id="offer-table"></tbody>
-              </table>
-            </div>
-          </div>
-        </section>
-
-        <section id="bookings" class="panel-section" aria-label="Buchungsübersicht">
-          <div class="panel-heading">
-            <div>
-              <h2>Buchungen &amp; Kundenanfragen</h2>
-              <p>Bearbeiten Sie aktuelle Buchungsanfragen, vergeben Sie Status und Kommentare.</p>
-            </div>
-            <button class="btn btn-secondary" id="export-bookings">Export als CSV</button>
-          </div>
-          <table class="data-table" aria-label="Buchungsanfragen">
-            <thead>
-              <tr>
-                <th>Kunde</th>
-                <th>Leistung</th>
-                <th>Reiseziel</th>
-                <th>Preis</th>
-                <th>Status</th>
-                <th>Aktionen</th>
-              </tr>
-            </thead>
-            <tbody id="booking-table"></tbody>
-          </table>
-        </section>
-
-        <section id="partners" class="panel-section" aria-label="Partnerverwaltung">
-          <div class="panel-heading">
-            <div>
-              <h2>Partner Leads &amp; Agenturen</h2>
-              <p>Onboarding von Reisebüros, Resellern und Corporate-Kunden.</p>
-            </div>
-          </div>
-          <div class="panel-grid">
-            <div class="panel">
-              <h3>Neue Partneranfragen</h3>
-              <table class="data-table" aria-label="Partneranfragen">
-                <thead>
-                  <tr>
-                    <th>Unternehmen</th>
-                    <th>Kontakt</th>
-                    <th>E-Mail</th>
-                    <th>Typ</th>
-                    <th>Datum</th>
-                  </tr>
-                </thead>
-                <tbody id="partner-table"></tbody>
-              </table>
-            </div>
-            <div class="panel">
-              <h3>API-Zugang &amp; White-Label</h3>
-              <ul class="checklist">
-                <li>Sandbox-Accounts in 24h aktivieren</li>
-                <li>Provisionsmodell individuell festlegen</li>
-                <li>White-Label Layouts per JSON konfigurieren</li>
-                <li>Webhook-URL für Buchungsstatus definieren</li>
-              </ul>
-            </div>
-          </div>
-        </section>
-
-        <section id="settings" class="panel-section" aria-label="Systemeinstellungen">
-          <div class="panel-grid">
-            <div class="panel">
-              <h2>Systemkonfiguration</h2>
-              <form class="form-grid">
-                <div class="form-group">
-                  <label for="setting-payment">Zahlarten</label>
-                  <select id="setting-payment">
-                    <option>PayPal + Kreditkarte + SEPA</option>
-                    <option>PayPal + SEPA</option>
-                    <option>Nur Rechnung</option>
-                  </select>
-                </div>
-                <div class="form-group">
-                  <label for="setting-notification">Benachrichtigungen</label>
-                  <select id="setting-notification">
-                    <option>E-Mail &amp; WhatsApp</option>
-                    <option>Nur E-Mail</option>
-                    <option>Nur WhatsApp</option>
-                  </select>
-                </div>
-                <div class="form-group form-group-full">
-                  <label for="setting-notes">Interne Notizen</label>
-                  <textarea id="setting-notes" rows="3" placeholder="Offene Aufgaben, Hinweise für Team"></textarea>
-                </div>
-                <button type="button" class="btn btn-secondary" id="save-settings">Änderungen speichern</button>
-              </form>
-            </div>
-            <div class="panel">
-              <h2>Dokumente</h2>
-              <ul class="document-list">
-                <li><a href="../index.html" target="_blank" rel="noopener">Zur Webseite</a></li>
-                <li><a href="#" aria-disabled="true">API Dokumentation (in Arbeit)</a></li>
-                <li><a href="#" aria-disabled="true">Vertriebshandbuch (PDF)</a></li>
-              </ul>
-            </div>
-          </div>
-        </section>
-      </main>
-    </div>
+    <div id="root"></div>
+    <script type="module" src="/admin/app.js"></script>
   </body>
 </html>

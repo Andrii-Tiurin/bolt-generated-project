@@ -1,395 +1,272 @@
-const storage = {
-  get(key, fallback = []) {
-    try {
-      const value = localStorage.getItem(key);
-      return value ? JSON.parse(value) : fallback;
-    } catch (error) {
-      console.warn(`Konnte ${key} nicht lesen`, error);
-      return fallback;
-    }
-  },
-  set(key, value) {
-    try {
-      localStorage.setItem(key, JSON.stringify(value));
-    } catch (error) {
-      console.warn(`Konnte ${key} nicht speichern`, error);
-    }
-  },
-  push(key, entry) {
-    const existing = this.get(key, []);
-    existing.push(entry);
-    this.set(key, existing);
-  }
+const state = {
+  navigation: [],
+  sliderData: [],
+  deals: [],
+  services: [],
+  hotels: [],
+  packages: [],
+  transfers: [],
+  flights: [],
+  blogPosts: [],
+  settings: {},
+  legal: {},
+  seo: []
 };
 
-const sliderData = [
-  {
-    title: 'Sommerträume auf den Malediven',
-    description:
-      '7 Nächte im 5★ Resort mit All Inclusive, Direktflug ab Frankfurt &amp; Speedboat-Transfer inklusive.',
-    price: 'ab 2.499 €',
-    tag: 'Top Deal',
-    cta: 'Jetzt Traumreise sichern',
-    secondary: 'Flexible Umbuchung bis 14 Tage vor Abreise',
-    image: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80'
-  },
-  {
-    title: 'Städtezauber in New York',
-    description:
-      '5 Nächte im Boutique-Hotel in Manhattan inkl. Direktflug ab Berlin, Hop-on Hop-off Pass &amp; Travel Concierge.',
-    price: 'ab 1.399 €',
-    tag: 'Last Minute',
-    cta: 'Flug &amp; Hotel kombinieren',
-    secondary: 'Nur wenige Plätze verfügbar – jetzt buchen',
-    image: 'https://images.unsplash.com/photo-1526402464533-73a0528ff7a0?auto=format&fit=crop&w=1200&q=80'
-  },
-  {
-    title: 'Family Special an der Türkischen Riviera',
-    description:
-      '1 Woche Ultra All Inclusive im 4★ Familienhotel inklusive Wasserpark, Kinderbetreuung &amp; Direktflug.',
-    price: 'ab 899 €',
-    tag: 'Family Deal',
-    cta: 'Familienangebot anfragen',
-    secondary: 'Kostenlose Stornierung bis 30 Tage vor Abreise',
-    image: 'https://images.unsplash.com/photo-1489515217757-5fd1be406fef?auto=format&fit=crop&w=1200&q=80'
-  }
-];
+let sliderTimer = null;
 
-const dealData = [
-  {
-    title: 'Dubai Deluxe Week',
-    destination: 'Dubai, VAE',
-    nights: 7,
-    price: 1299,
-    image: 'https://images.unsplash.com/photo-1505761671935-60b3a7427bad?auto=format&fit=crop&w=900&q=80',
-    endDate: addDays(3),
-    perks: ['5★ Strandhotel', 'Business Lounge Zugang', 'Wüstensafari inklusive']
-  },
-  {
-    title: 'Mallorca Kurztrip',
-    destination: 'Mallorca, Spanien',
-    nights: 5,
-    price: 599,
-    image: 'https://images.unsplash.com/photo-1493558103817-58b2924bce98?auto=format&fit=crop&w=900&q=80',
-    endDate: addDays(5),
-    perks: ['Adults Only Hotel', 'Frühstück &amp; Dinner', 'Zimmer mit Meerblick']
-  },
-  {
-    title: 'Island Explorer',
-    destination: 'Reykjavík, Island',
-    nights: 6,
-    price: 1449,
-    image: 'https://images.unsplash.com/photo-1476610182048-b716b8518aae?auto=format&fit=crop&w=900&q=80',
-    endDate: addDays(2),
-    perks: ['Nordlichter Tour', 'Golden Circle Ausflug', 'Reiseversicherung inklusive']
-  },
-  {
-    title: 'Safari &amp; Strand Kombi',
-    destination: 'Tansania &amp; Sansibar',
-    nights: 10,
-    price: 2899,
-    image: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80',
-    endDate: addDays(7),
-    perks: ['Serengeti Safari', 'Sansibar Beach Resort', 'Privater Guide']
-  }
-];
+document.addEventListener('DOMContentLoaded', () => {
+  bootstrapInterface();
+  loadPortalContent();
+});
 
-const serviceData = [
-  {
-    icon: '✈️',
-    title: 'Flugexperten',
-    description:
-      'Direktanbindung an NDC &amp; GDS – wir finden die besten Verfügbarkeiten, Tarife und Upgrade-Optionen.'
-  },
-  {
-    icon: '🏨',
-    title: 'Hotelwelten',
-    description:
-      'Kuratiertes Portfolio mit über 50.000 Hotels, Bewertungen, Nachhaltigkeits-Scores und transparenten Preisen.'
-  },
-  {
-    icon: '🛡️',
-    title: 'Reiseschutz',
-    description:
-      'Reiseversicherung, Reiseschutzbrief und Assistance-Services optional in jedem Angebot enthalten.'
-  },
-  {
-    icon: '👨‍💼',
-    title: 'Concierge &amp; Betreuung',
-    description:
-      'Persönliche Reiseexperten, 24/7 erreichbar via WhatsApp &amp; Telegram inklusive digitalem Dokumentenversand.'
-  }
-];
-
-const hotelData = [
-  {
-    title: 'The Address Sky View',
-    location: 'Dubai, Downtown',
-    category: 'luxury',
-    rating: 5,
-    price: 'ab 279 € / Nacht',
-    image: 'https://images.unsplash.com/photo-1501117716987-c8e1ecb21063?auto=format&fit=crop&w=900&q=80',
-    highlights: ['Infinity Pool', 'Sky Bridge Bar', 'Club Lounge']
-  },
-  {
-    title: 'Majestic Palace',
-    location: 'Rom, Italien',
-    category: 'city',
-    rating: 4,
-    price: 'ab 189 € / Nacht',
-    image: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=900&q=80',
-    highlights: ['Zentrale Lage', 'Rooftop-Bar', 'Gratis City-Guide']
-  },
-  {
-    title: 'Azure Coast Resort',
-    location: 'Antalya, Türkei',
-    category: 'beach',
-    rating: 5,
-    price: 'ab 159 € / Nacht',
-    image: 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=900&q=80',
-    highlights: ['Privater Strand', 'Spa &amp; Wellness', 'Familienzimmer']
-  },
-  {
-    title: 'Bergpanorama Lodge',
-    location: 'Zermatt, Schweiz',
-    category: 'luxury',
-    rating: 5,
-    price: 'ab 349 € / Nacht',
-    image: 'https://images.unsplash.com/photo-1496417263034-38ec4f0b665a?auto=format&fit=crop&w=900&q=80',
-    highlights: ['Alpin Spa', 'Ski-in/Ski-out', 'Gourmetküche']
-  },
-  {
-    title: 'Urban Loft Berlin',
-    location: 'Berlin, Deutschland',
-    category: 'city',
-    rating: 4,
-    price: 'ab 139 € / Nacht',
-    image: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=900&q=80',
-    highlights: ['Design Zimmer', 'Co-Working Space', 'Late Checkout']
-  },
-  {
-    title: 'Sunset Bay Suites',
-    location: 'Santorini, Griechenland',
-    category: 'beach',
-    rating: 5,
-    price: 'ab 299 € / Nacht',
-    image: 'https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?auto=format&fit=crop&w=900&q=80',
-    highlights: ['Infinity Pool', 'Adults Only', 'Sunset Dinner']
-  }
-];
-
-const packageData = [
-  {
-    title: 'Griechische Inselhopping-Reise',
-    description: 'Athen – Mykonos – Santorini mit Inlandsflügen, 4★ Hotels &amp; Insel-Highlights.',
-    price: 1699,
-    duration: '9 Tage',
-    image: 'https://images.unsplash.com/photo-1493558103817-58b2924bce98?auto=format&fit=crop&w=900&q=80'
-  },
-  {
-    title: 'Rundreise Vietnam Deluxe',
-    description: 'Hanoi, Ha Long Bucht, Hoi An &amp; Ho-Chi-Minh-Stadt inklusive deutschsprachiger Reiseleitung.',
-    price: 2149,
-    duration: '12 Tage',
-    image: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=900&q=80'
-  },
-  {
-    title: 'Skandinavisches Wintermärchen',
-    description: 'Nordnorwegen mit Huskysafari, Eishotel &amp; Glas-Iglu – perfekte Sicht auf Polarlichter.',
-    price: 1899,
-    duration: '8 Tage',
-    image: 'https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=900&q=80'
-  }
-];
-
-const transferData = [
-  {
-    icon: '🚐',
-    title: 'Privater Chauffeur',
-    description: 'Exklusive Limousinen- &amp; Van-Transfers vom Flughafen direkt ins Hotel – deutschlandweit &amp; international.'
-  },
-  {
-    icon: '🚌',
-    title: 'Shuttle &amp; Gruppentransfer',
-    description: 'Kostengünstige Shuttle-Services, abgestimmt auf Flugzeiten. Perfekt für Gruppen &amp; Incentives.'
-  },
-  {
-    icon: '🚢',
-    title: 'Kreuzfahrt-An- &amp; Abreise',
-    description: 'Vom Hafen zum Hotel: organisierte Transfers inkl. Gepäckservice und Meet &amp; Greet.'
-  }
-];
-
-const blogPosts = [
-  {
-    title: 'Top 10 Fernreisen für den Winter 2024',
-    excerpt:
-      'Von Kapstadt bis Phuket: Unsere Reiseexperten haben die beliebtesten Langstreckenziele für Sie analysiert.',
-    date: '12. Januar 2024',
-    image: 'https://images.unsplash.com/photo-1500043208385-0c01be168b0d?auto=format&fit=crop&w=900&q=80'
-  },
-  {
-    title: 'Visa-Update: Einreisebestimmungen USA &amp; Kanada',
-    excerpt: 'Alles, was Sie jetzt zum ESTA, eTA und zu aktuellen Einreisebedingungen wissen müssen.',
-    date: '04. Februar 2024',
-    image: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80'
-  },
-  {
-    title: 'Nachhaltig reisen mit Monotours24',
-    excerpt: 'CO₂-Kompensation, Green Stay Hotels &amp; Rail &amp; Fly – so unterstützen wir nachhaltige Reisen.',
-    date: '22. Februar 2024',
-    image: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=900&q=80'
-  }
-];
-
-const legalContent = {
-  impressum: `
-    <h2>Impressum</h2>
-    <p><strong>Monotours24 – Andrii Tiurin</strong><br />
-    Julian-Marchlewski-Ring 104<br />
-    16303 Schwedt/Oder, Deutschland</p>
-    <p><strong>Geschäftsführer:</strong> Andrii Tiurin</p>
-    <p><strong>Telefon:</strong> 0175 906 8548<br />
-    <strong>E-Mail:</strong> <a href="mailto:Monotours24@gmail.com">Monotours24@gmail.com</a><br />
-    <strong>Web:</strong> <a href="https://monotours24.de" target="_blank" rel="noopener">monotours24.de</a></p>
-    <p><strong>Steuernummer:</strong> [Placeholder]<br />
-    <strong>USt.-IDNr.:</strong> [Placeholder]</p>
-    <p>Inhaltlich verantwortlich gemäß § 18 Abs. 2 MStV: Andrii Tiurin</p>
-    <h3>Berufshaftpflicht</h3>
-    <p>Versicherungsschutz über einen deutschen Versicherer. Genaue Daten auf Anfrage.</p>
-  `,
-  datenschutz: `
-    <h2>Datenschutzerklärung</h2>
-    <p>Wir verarbeiten personenbezogene Daten ausschließlich gemäß DSGVO. Verantwortlicher ist Monotours24 – Andrii Tiurin.</p>
-    <h3>Welche Daten werden verarbeitet?</h3>
-    <ul>
-      <li>Kundendaten für Buchungen (Name, Kontaktdaten, Zahlungsdaten)</li>
-      <li>Analysedaten zur Optimierung unseres Angebots</li>
-      <li>Partnerdaten für B2B-Verträge</li>
-    </ul>
-    <h3>Ihre Rechte</h3>
-    <p>Sie haben das Recht auf Auskunft, Berichtigung, Löschung und Datenübertragbarkeit. Kontaktieren Sie uns unter <a href="mailto:Monotours24@gmail.com">Monotours24@gmail.com</a>.</p>
-    <h3>Cookies</h3>
-    <p>Wir setzen technisch notwendige Cookies und, nach Zustimmung, Analyse-Cookies ein. Sie können Ihre Einwilligung jederzeit widerrufen.</p>
-  `,
-  agb: `
-    <h2>Allgemeine Geschäftsbedingungen</h2>
-    <ol>
-      <li><strong>Vertragsabschluss:</strong> Ein Reisevertrag kommt mit schriftlicher oder elektronischer Bestätigung zustande.</li>
-      <li><strong>Zahlung:</strong> Anzahlung 20 % bei Buchung, Restzahlung 30 Tage vor Abreise. Zahlungen via PayPal, Kreditkarte oder SEPA.</li>
-      <li><strong>Umbuchung &amp; Storno:</strong> Gemäß gesetzlichen Regelungen und Veranstalterbedingungen. Individuelle Kulanzregelungen auf Anfrage.</li>
-      <li><strong>Haftung:</strong> Wir haften im Rahmen der gesetzlichen Vorschriften; weitergehende Ansprüche richten sich nach dem BGB.</li>
-      <li><strong>Gerichtsstand:</strong> Schwedt/Oder, Deutschland.</li>
-    </ol>
-  `
-};
-
-function addDays(days) {
-  const date = new Date();
-  date.setDate(date.getDate() + days);
-  return date.toISOString();
+function bootstrapInterface() {
+  setupSearchTabs();
+  setupHotelFilter();
+  setupForms();
+  setupBookingButtons();
+  setupModal();
+  setupCookieBanner();
+  setupNavigation();
+  setupStatsObserver();
+  setupFooterYear();
 }
 
-function createSlider() {
-  const slider = document.getElementById('hero-slider');
-  if (!slider) return;
+async function loadPortalContent() {
+  try {
+    const response = await fetch('/api/public/content');
+    if (!response.ok) {
+      throw new Error('Inhalte konnten nicht geladen werden');
+    }
+    const data = await response.json();
+    state.navigation = data.navigation || [];
+    state.sliderData = data.heroSlides || [];
+    state.deals = data.hotDeals || [];
+    state.services = (data.settings?.services || []);
+    state.hotels = data.hotels || [];
+    state.packages = data.packages || [];
+    state.transfers = data.transfers || [];
+    state.flights = data.flights || [];
+    state.blogPosts = data.blogPosts || [];
+    state.settings = data.settings || {};
+    state.seo = data.seo || [];
+    state.legal = (data.legal || []).reduce((acc, entry) => {
+      acc[entry.slug] = entry;
+      return acc;
+    }, {});
 
-  slider.innerHTML = sliderData
+    applyBranding();
+    renderNavigation();
+    renderHero();
+    renderDeals();
+    renderServices();
+    renderHotels();
+    renderPackages();
+    renderTransfers();
+    renderBlog();
+    renderFooter();
+    populateLegalContent();
+    setupCountdowns();
+  } catch (error) {
+    console.error('Fehler beim Laden der Inhalte:', error);
+  }
+}
+
+function applyBranding() {
+  const branding = state.settings.branding || {};
+  const theme = state.settings.theme || {};
+  const contact = state.settings.contact || {};
+  const footer = state.settings.footer || {};
+  const multilingual = state.settings.multilingual || {};
+
+  const root = document.documentElement;
+  if (theme.primaryColor) root.style.setProperty('--color-primary', theme.primaryColor);
+  if (theme.secondaryColor) root.style.setProperty('--color-secondary', theme.secondaryColor);
+  if (theme.accentColor) root.style.setProperty('--color-accent', theme.accentColor);
+  if (theme.neutralColor) root.style.setProperty('--color-text', theme.neutralColor);
+  if (theme.fontBody) document.body.style.fontFamily = `${theme.fontBody}, 'Segoe UI', sans-serif`;
+
+  document.querySelectorAll('.logo-text').forEach((element) => {
+    element.textContent = branding.brandName || 'Monotours24';
+  });
+
+  const logoIconElements = document.querySelectorAll('.logo-icon');
+  logoIconElements.forEach((element) => {
+    if (branding.logoUrl) {
+      element.innerHTML = `<img src="${branding.logoUrl}" alt="${branding.brandName || 'Monotours24'}" />`;
+    } else {
+      element.textContent = '✈️';
+    }
+  });
+
+  const topBarLeft = document.querySelector('.top-bar-left');
+  if (topBarLeft) {
+    topBarLeft.innerHTML = `
+      <span><strong>Hotline:</strong> ${contact.phone || '0175 906 8548'}</span>
+      <span><strong>WhatsApp:</strong> ${contact.whatsapp || contact.phone || ''}</span>
+      <span><strong>E-Mail:</strong> ${contact.email || 'Monotours24@gmail.com'}</span>
+    `;
+  }
+
+  const languageSwitch = document.querySelector('.language-switch');
+  if (languageSwitch && multilingual) {
+    const enabled = multilingual.englishEnabled ? 'EN verfügbar' : 'EN demnächst';
+    languageSwitch.innerHTML = `${multilingual.defaultLocale?.toUpperCase() || 'DE'} <span class="tag">${enabled}</span>`;
+  }
+
+  const floatingButtons = document.querySelector('.floating-contact');
+  if (floatingButtons) {
+    const whatsappLink = floatingButtons.querySelector('.whatsapp');
+    const phoneLink = floatingButtons.querySelector('.phone');
+    if (whatsappLink && contact.whatsapp) {
+      const sanitized = contact.whatsapp.replace(/\D/g, '');
+      whatsappLink.href = `https://wa.me/${sanitized}`;
+    }
+    if (phoneLink && contact.phone) {
+      phoneLink.href = `tel:${contact.phone.replace(/\s+/g, '')}`;
+    }
+  }
+
+  const footerBrand = document.querySelector('.footer-brand p');
+  if (footerBrand && branding.tagline) {
+    footerBrand.textContent = branding.tagline;
+  }
+
+  const footerInfo = document.querySelector('.footer-bottom p:nth-of-type(2)');
+  if (footerInfo) {
+    footerInfo.textContent = `Steuernummer: ${footer.taxNumber || 'auf Anfrage'} · USt.-IDNr.: ${footer.vatId || 'auf Anfrage'}`;
+  }
+}
+
+function renderNavigation() {
+  const menu = document.getElementById('primary-menu');
+  if (menu && state.navigation.length) {
+    menu.innerHTML = state.navigation
+      .filter((item) => item.visible !== 0)
+      .sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0))
+      .map((item) => `<li><a href="${item.href}">${item.label}</a></li>`)
+      .join('');
+  }
+}
+
+function renderHero() {
+  const container = document.getElementById('hero-slider');
+  if (!container) return;
+
+  if (sliderTimer) {
+    clearInterval(sliderTimer);
+    sliderTimer = null;
+  }
+
+  if (!state.sliderData.length) {
+    container.innerHTML = '<div class="hero-slide is-active"><div class="slide-info"><h1>Monotours24</h1><p>Ihr Reiseexperte für Traumreisen.</p></div></div>';
+    return;
+  }
+
+  container.innerHTML = state.sliderData
     .map(
       (slide, index) => `
-        <div class="hero-slide${index === 0 ? ' is-active' : ''}" style="--slide-image: url('${slide.image}')">
+        <div class="hero-slide${index === 0 ? ' is-active' : ''}" style="--slide-image: url('${slide.imageUrl || slide.image}')">
           <div class="slide-info">
-            <span class="slide-tag">${slide.tag}</span>
+            ${slide.tag ? `<span class="slide-tag">${slide.tag}</span>` : ''}
             <h1>${slide.title}</h1>
-            <p>${slide.description}</p>
+            ${slide.description ? `<p>${slide.description}</p>` : ''}
             <div class="slide-actions">
-              <a href="#angebote" class="btn">${slide.cta}</a>
-              <span class="price-tag">${slide.price}</span>
+              <a href="${slide.ctaLink || '#angebote'}" class="btn">${slide.ctaLabel || 'Jetzt anfragen'}</a>
+              ${slide.priceLabel ? `<span class="price-tag">${slide.priceLabel}</span>` : ''}
             </div>
-            <p class="form-hint">${slide.secondary}</p>
+            ${slide.secondaryLine ? `<p class="form-hint">${slide.secondaryLine}</p>` : ''}
           </div>
           <div class="slide-image" aria-hidden="true">
-            <img src="${slide.image}" alt="${slide.title}" loading="lazy" />
+            <img src="${slide.imageUrl || slide.image}" alt="${slide.title}" loading="lazy" />
           </div>
         </div>
       `
     )
     .join('');
 
+  const slides = Array.from(container.querySelectorAll('.hero-slide'));
   let current = 0;
-  const slides = Array.from(slider.querySelectorAll('.hero-slide'));
   const total = slides.length;
-  const prevBtn = document.getElementById('slider-prev');
-  const nextBtn = document.getElementById('slider-next');
+  const prev = document.getElementById('slider-prev');
+  const next = document.getElementById('slider-next');
 
   const showSlide = (index) => {
-    slides[current].classList.remove('is-active');
+    slides[current]?.classList.remove('is-active');
     current = (index + total) % total;
-    slides[current].classList.add('is-active');
+    slides[current]?.classList.add('is-active');
   };
 
-  const autoRotate = () => showSlide(current + 1);
-  let interval = setInterval(autoRotate, 7000);
+  const rotate = () => showSlide(current + 1);
+  sliderTimer = setInterval(rotate, 7000);
 
-  const resetInterval = () => {
-    clearInterval(interval);
-    interval = setInterval(autoRotate, 7000);
+  const reset = () => {
+    clearInterval(sliderTimer);
+    sliderTimer = setInterval(rotate, 7000);
   };
 
-  prevBtn?.addEventListener('click', () => {
+  prev?.addEventListener('click', () => {
     showSlide(current - 1);
-    resetInterval();
+    reset();
   });
 
-  nextBtn?.addEventListener('click', () => {
+  next?.addEventListener('click', () => {
     showSlide(current + 1);
-    resetInterval();
+    reset();
   });
 
-  slider.addEventListener('mouseenter', () => clearInterval(interval));
-  slider.addEventListener('mouseleave', resetInterval);
+  container.addEventListener('mouseenter', () => clearInterval(sliderTimer));
+  container.addEventListener('mouseleave', reset);
 }
 
-function createDeals() {
+function renderDeals() {
   const grid = document.getElementById('deal-grid');
   if (!grid) return;
-  grid.innerHTML = dealData
-    .map(
-      (deal) => `
-        <article class="deal-card" data-destination="${deal.destination}">
+
+  grid.innerHTML = state.deals
+    .map((deal) => {
+      const price = typeof deal.price === 'number' ? `ab ${deal.price.toLocaleString('de-DE')} €` : deal.priceLabel || '';
+      const perks = Array.isArray(deal.perks) ? deal.perks.join(' · ') : '';
+      const payload = encodeBookingPayload({
+        productType: 'deal',
+        productId: deal.id,
+        title: deal.title,
+        destination: deal.destination,
+        price: deal.price,
+        travelDate: deal.endDate
+      });
+      return `
+        <article class="deal-card" data-destination="${deal.destination || ''}">
           <div class="deal-image">
-            <img src="${deal.image}" alt="${deal.title}" loading="lazy" />
+            <img src="${deal.imageUrl || ''}" alt="${deal.title}" loading="lazy" />
           </div>
           <div class="deal-content">
             <div class="deal-meta">
-              <span>${deal.destination}</span>
-              <span class="countdown" data-end-date="${deal.endDate}"></span>
+              <span>${deal.destination || ''}</span>
+              <span class="countdown" data-end-date="${deal.endDate || ''}"></span>
             </div>
             <h3>${deal.title}</h3>
-            <p>${deal.nights} Nächte · ${deal.perks.join(' · ')}</p>
+            <p>${perks}</p>
             <div class="deal-meta">
-              <span class="price-tag">ab ${deal.price.toLocaleString('de-DE')} €</span>
-              <button class="btn btn-secondary" data-booking='${JSON.stringify({
-                title: deal.title,
-                price: deal.price,
-                destination: deal.destination
-              })}'>Angebot sichern</button>
+              <span class="price-tag">${price}</span>
+              <button class="btn btn-secondary" data-booking="${payload}">Angebot sichern</button>
             </div>
           </div>
         </article>
-      `
-    )
+      `;
+    })
     .join('');
 }
 
-function createServices() {
+function renderServices() {
   const grid = document.getElementById('service-grid');
   if (!grid) return;
-  grid.innerHTML = serviceData
+  const services = state.services.length ? state.services : defaultServices();
+  grid.innerHTML = services
     .map(
       (service) => `
         <article class="service-card">
-          <div class="icon">${service.icon}</div>
+          <div class="icon">${service.icon || '✨'}</div>
           <h3>${service.title}</h3>
           <p>${service.description}</p>
         </article>
@@ -398,87 +275,154 @@ function createServices() {
     .join('');
 }
 
-function createHotels(filter = 'alle') {
+function renderHotels(filter = 'alle') {
   const grid = document.getElementById('hotel-grid');
   if (!grid) return;
-  const filtered = filter === 'alle' ? hotelData : hotelData.filter((hotel) => hotel.category === filter);
+  const hotels = state.hotels.map((hotel) => ({ ...hotel, category: determineHotelCategory(hotel) }));
+  const filtered = filter === 'alle' ? hotels : hotels.filter((hotel) => hotel.category === filter);
+
   grid.innerHTML = filtered
-    .map(
-      (hotel) => `
-        <article class="hotel-card">
-          <span class="badge">${hotel.category === 'luxury' ? 'Luxus' : hotel.category === 'beach' ? 'Strand' : 'City'}</span>
-          <img src="${hotel.image}" alt="${hotel.title}" loading="lazy" />
+    .map((hotel) => {
+      const amenities = Array.isArray(hotel.amenities) ? hotel.amenities.slice(0, 3).join(' · ') : '';
+      const price = hotel.priceDisplay || (hotel.priceFrom ? `ab ${hotel.priceFrom.toLocaleString('de-DE')} €` : 'auf Anfrage');
+      const rating = hotel.rating ? '★'.repeat(Math.round(hotel.rating)) : '';
+      const payload = encodeBookingPayload({
+        productType: 'hotel',
+        productId: hotel.id,
+        title: hotel.title,
+        destination: hotel.location,
+        price: hotel.priceFrom
+      });
+      return `
+        <article class="hotel-card" data-category="${hotel.category}">
+          <span class="badge">${renderCategoryLabel(hotel.category)}</span>
+          <img src="${hotel.imageUrl || hotel.image || ''}" alt="${hotel.title}" loading="lazy" />
           <h3>${hotel.title}</h3>
-          <p>${hotel.location}</p>
-          <div class="rating">${'★'.repeat(hotel.rating)}</div>
-          <p class="price-tag">${hotel.price}</p>
-          <p>${hotel.highlights.join(' · ')}</p>
-          <button class="btn btn-secondary" data-booking='${JSON.stringify({
-            title: hotel.title,
-            price: hotel.price,
-            destination: hotel.location
-          })}'>Hotel anfragen</button>
+          <p>${hotel.location || ''}</p>
+          <div class="rating">${rating}</div>
+          <p class="price-tag">${price}</p>
+          <p>${amenities}</p>
+          <button class="btn btn-secondary" data-booking="${payload}">Hotel anfragen</button>
         </article>
-      `
-    )
+      `;
+    })
     .join('');
 }
 
-function createPackages() {
+function renderPackages() {
   const grid = document.getElementById('package-grid');
   if (!grid) return;
-  grid.innerHTML = packageData
-    .map(
-      (pkg) => `
+  grid.innerHTML = state.packages
+    .map((pkg) => {
+      const payload = encodeBookingPayload({
+        productType: 'package',
+        productId: pkg.id,
+        title: pkg.title,
+        destination: pkg.location,
+        price: pkg.priceFrom
+      });
+      const price = pkg.priceDisplay || (pkg.priceFrom ? `ab ${pkg.priceFrom.toLocaleString('de-DE')} €` : 'auf Anfrage');
+      return `
         <article class="package-card">
           <div class="icon">📦</div>
           <h3>${pkg.title}</h3>
-          <p>${pkg.description}</p>
-          <p><strong>Dauer:</strong> ${pkg.duration}</p>
-          <span class="price-tag">ab ${pkg.price.toLocaleString('de-DE')} €</span>
-          <button class="btn" data-booking='${JSON.stringify({
-            title: pkg.title,
-            price: pkg.price,
-            destination: pkg.description
-          })}'>Jetzt anfragen</button>
+          <p>${pkg.description || ''}</p>
+          <p><strong>Verfügbarkeit:</strong> ${formatAvailability(pkg)}</p>
+          <span class="price-tag">${price}</span>
+          <button class="btn" data-booking="${payload}">Jetzt anfragen</button>
         </article>
-      `
-    )
+      `;
+    })
     .join('');
 }
 
-function createTransfers() {
+function renderTransfers() {
   const grid = document.getElementById('transfer-grid');
   if (!grid) return;
-  grid.innerHTML = transferData
-    .map(
-      (transfer) => `
+  grid.innerHTML = state.transfers
+    .map((transfer) => {
+      const amenities = Array.isArray(transfer.amenities) ? transfer.amenities.join(' · ') : '';
+      const payload = encodeBookingPayload({
+        productType: 'transfer',
+        productId: transfer.id,
+        title: transfer.title,
+        destination: transfer.location,
+        price: transfer.priceFrom
+      });
+      const price = transfer.priceDisplay || (transfer.priceFrom ? `ab ${transfer.priceFrom.toLocaleString('de-DE')} €` : 'auf Anfrage');
+      return `
         <article class="transfer-card">
-          <div class="icon">${transfer.icon}</div>
+          <div class="icon">🚐</div>
           <h3>${transfer.title}</h3>
-          <p>${transfer.description}</p>
+          <p>${transfer.description || ''}</p>
+          <p class="form-hint">${amenities}</p>
+          <span class="price-tag">${price}</span>
+          <button class="btn btn-secondary" data-booking="${payload}">Transfer anfragen</button>
         </article>
-      `
-    )
+      `;
+    })
     .join('');
 }
 
-function createBlog() {
+function renderBlog() {
   const grid = document.getElementById('blog-grid');
   if (!grid) return;
-  grid.innerHTML = blogPosts
-    .map(
-      (post) => `
-        <article class="blog-card">
-          <img src="${post.image}" alt="${post.title}" loading="lazy" />
-          <p class="form-hint">${post.date}</p>
-          <h3>${post.title}</h3>
-          <p>${post.excerpt}</p>
-          <a href="#" class="btn btn-secondary">Mehr erfahren</a>
-        </article>
-      `
-    )
+  grid.innerHTML = state.blogPosts
+    .map((post) => `
+      <article class="blog-card">
+        <img src="${post.imageUrl || post.image || ''}" alt="${post.title}" loading="lazy" />
+        <p class="form-hint">${formatPostDate(post.publishedAt)}</p>
+        <h3>${post.title}</h3>
+        <p>${post.excerpt || ''}</p>
+        <a href="#" class="btn btn-secondary">Mehr erfahren</a>
+      </article>
+    `)
     .join('');
+}
+
+function renderFooter() {
+  const footerBrand = document.querySelector('.footer-brand p');
+  const footerBottom = document.querySelector('.footer-bottom .container');
+  const footer = state.settings.footer || {};
+  const contact = state.settings.contact || {};
+  if (footerBrand && footer.company) {
+    footerBrand.textContent = `${footer.company} · ${footer.street}, ${footer.postalCode} ${footer.city}`;
+  }
+  if (footerBottom) {
+    const paragraphs = footerBottom.querySelectorAll('p');
+    if (paragraphs[0]) {
+      paragraphs[0].innerHTML = `© <span id="current-year"></span> ${footer.company || 'Monotours24'} – ${footer.managingDirector || 'Geschäftsführung'}. Alle Rechte vorbehalten.`;
+      setupFooterYear();
+    }
+    if (paragraphs[1]) {
+      paragraphs[1].textContent = `Steuernummer: ${footer.taxNumber || 'auf Anfrage'} · USt.-IDNr.: ${footer.vatId || 'auf Anfrage'}`;
+    }
+  }
+
+  const contactForm = document.getElementById('contact-form');
+  if (contactForm) {
+    const phoneInput = contactForm.querySelector('#contact-phone');
+    if (phoneInput && contact.phone) {
+      phoneInput.placeholder = contact.phone;
+    }
+  }
+}
+
+function populateLegalContent() {
+  window.legalContent = window.legalContent || {};
+  const defaults = {
+    agb: '<h2>Allgemeine Geschäftsbedingungen</h2><p>Die vollständigen Geschäftsbedingungen werden derzeit vorbereitet.</p>'
+  };
+
+  Object.entries(state.legal).forEach(([slug, entry]) => {
+    window.legalContent[slug] = `<h2>${entry.title}</h2>${entry.content}`;
+  });
+
+  Object.entries(defaults).forEach(([key, value]) => {
+    if (!window.legalContent[key]) {
+      window.legalContent[key] = value;
+    }
+  });
 }
 
 function setupSearchTabs() {
@@ -486,7 +430,7 @@ function setupSearchTabs() {
   const forms = document.querySelectorAll('.search-form');
   tabs.forEach((tab) => {
     tab.addEventListener('click', () => {
-      tabs.forEach((t) => t.classList.remove('active'));
+      tabs.forEach((item) => item.classList.remove('active'));
       forms.forEach((form) => form.classList.remove('active'));
       tab.classList.add('active');
       document.getElementById(tab.dataset.target)?.classList.add('active');
@@ -497,14 +441,19 @@ function setupSearchTabs() {
 function setupHotelFilter() {
   const select = document.getElementById('hotel-filter-select');
   if (!select) return;
-  select.addEventListener('change', () => createHotels(select.value));
+  select.addEventListener('change', () => renderHotels(select.value));
 }
 
 function setupCountdowns() {
   const countdowns = document.querySelectorAll('.countdown');
+  if (!countdowns.length) return;
   const update = () => {
     countdowns.forEach((element) => {
-      const end = new Date(element.dataset.endDate);
+      const end = new Date(element.dataset.endDate || '');
+      if (Number.isNaN(end.getTime())) {
+        element.textContent = '';
+        return;
+      }
       const diff = end - new Date();
       if (diff <= 0) {
         element.textContent = 'Nur noch heute';
@@ -516,66 +465,110 @@ function setupCountdowns() {
     });
   };
   update();
-  setInterval(update, 60 * 1000);
+  setInterval(update, 60000);
 }
 
 function setupForms() {
-  const flightForm = document.getElementById('flight-search');
-  const hotelForm = document.getElementById('hotel-search');
-  const packageForm = document.getElementById('package-search');
   const partnerForm = document.getElementById('partner-request');
   const contactForm = document.getElementById('contact-form');
   const newsletterForm = document.getElementById('newsletter-form');
   const customerLoginForm = document.getElementById('customer-login-form');
+  const flightForm = document.getElementById('flight-search');
+  const hotelForm = document.getElementById('hotel-search');
+  const packageForm = document.getElementById('package-search');
 
-  const handleSubmit = (form, type, callback) => {
-    form?.addEventListener('submit', (event) => {
-      event.preventDefault();
-      const formData = new FormData(form);
-      const payload = Object.fromEntries(formData.entries());
-      const entry = {
-        type,
-        data: payload,
-        createdAt: new Date().toISOString()
-      };
-      storage.push('monotours24_requests', entry);
-      callback?.(payload, entry);
-      alert('Vielen Dank! Wir melden uns in Kürze bei Ihnen.');
-      form.reset();
-    });
-  };
+  partnerForm?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const formData = new FormData(partnerForm);
+    const payload = Object.fromEntries(formData.entries());
+    try {
+      await submitJson('/api/partner-requests', {
+        companyName: payload['partner-company'],
+        contactName: payload['partner-contact'],
+        email: payload['partner-email'],
+        phone: '',
+        message: [payload['partner-type'], payload['partner-message']].filter(Boolean).join(' – ')
+      });
+      alert('Vielen Dank! Wir melden uns mit Ihrem Partnerzugang.');
+      partnerForm.reset();
+    } catch (error) {
+      alert(error.message || 'Anfrage konnte nicht gesendet werden.');
+    }
+  });
 
-  handleSubmit(flightForm, 'flights');
-  handleSubmit(hotelForm, 'hotels');
-  handleSubmit(packageForm, 'packages');
-  handleSubmit(partnerForm, 'partner');
-  handleSubmit(contactForm, 'contact');
-  handleSubmit(newsletterForm, 'newsletter', (payload, entry) => {
-    const newsletterData = storage.get('monotours24_newsletter', []);
-    newsletterData.push({ email: payload['newsletter-email'] || payload.email, createdAt: entry.createdAt });
-    storage.set('monotours24_newsletter', newsletterData);
+  contactForm?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const formData = new FormData(contactForm);
+    const payload = Object.fromEntries(formData.entries());
+    try {
+      await submitJson('/api/contact', {
+        firstName: payload['contact-name']?.split(' ')[0] || '',
+        lastName: payload['contact-name']?.split(' ').slice(1).join(' '),
+        email: payload['contact-email'],
+        phone: payload['contact-phone'],
+        message: payload['contact-message'],
+        topic: payload['contact-topic']
+      });
+      alert('Vielen Dank für Ihre Anfrage! Wir melden uns schnellstmöglich.');
+      contactForm.reset();
+    } catch (error) {
+      alert(error.message || 'Nachricht konnte nicht gesendet werden.');
+    }
+  });
+
+  newsletterForm?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const formData = new FormData(newsletterForm);
+    const payload = Object.fromEntries(formData.entries());
+    try {
+      await submitJson('/api/newsletter', {
+        email: payload['newsletter-email'],
+        firstName: ''
+      });
+      alert('Vielen Dank für Ihre Anmeldung zum Newsletter!');
+      newsletterForm.reset();
+    } catch (error) {
+      alert(error.message || 'Newsletter-Anmeldung fehlgeschlagen.');
+    }
   });
 
   customerLoginForm?.addEventListener('submit', (event) => {
     event.preventDefault();
-    const email = document.getElementById('customer-email').value;
-    const password = document.getElementById('customer-password').value;
-    if (email === 'kunde@monotours24.de' && password === 'reisen2024') {
-      alert('Login erfolgreich. Dies ist eine Demo-Ansicht.');
-    } else {
-      alert('Bitte prüfen Sie Ihre Zugangsdaten.');
-    }
+    alert('Dies ist eine Demo. Login-Funktion wird im Kundenportal aktiviert.');
+    customerLoginForm.reset();
   });
+
+  const bindSearchForm = (form, type) => {
+    form?.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const formData = new FormData(form);
+      const payload = Object.fromEntries(formData.entries());
+      openBookingModal({
+        productType: type,
+        title: `Anfrage ${type}`,
+        destination: payload[`${type}-destination`] || payload[`${type}-to`] || payload[`${type}-city`] || '',
+        travelDate: payload[`${type}-date`] || payload[`${type}-checkin`] || null,
+        meta: payload
+      });
+    });
+  };
+
+  bindSearchForm(flightForm, 'flight');
+  bindSearchForm(hotelForm, 'hotel');
+  bindSearchForm(packageForm, 'package');
 }
 
 function setupBookingButtons() {
-  const handler = (event) => {
+  document.addEventListener('click', (event) => {
     const button = event.target.closest('button[data-booking]');
     if (!button) return;
-    const payload = JSON.parse(button.dataset.booking);
-    openBookingModal(payload);
-  };
-  document.addEventListener('click', handler);
+    try {
+      const data = JSON.parse(decodeURIComponent(button.dataset.booking));
+      openBookingModal(data);
+    } catch (error) {
+      console.error('Ungültige Buchungsdaten', error);
+    }
+  });
 }
 
 function openBookingModal(payload) {
@@ -583,13 +576,16 @@ function openBookingModal(payload) {
   const content = document.getElementById('modal-content');
   if (!overlay || !content) return;
 
+  const travelInfo = [payload.destination ? `<p><strong>Reiseziel:</strong> ${payload.destination}</p>` : '', payload.price ? `<p><strong>ab Preis:</strong> ${formatPrice(payload.price)}</p>` : '', payload.travelDate ? `<p><strong>Reisedatum:</strong> ${formatDate(payload.travelDate)}</p>` : '']
+    .filter(Boolean)
+    .join('');
+
   content.innerHTML = `
     <div class="booking-modal">
       <h2>Reiseanfrage</h2>
       <div class="booking-summary">
-        <p><strong>Leistung:</strong> ${payload.title}</p>
-        ${payload.destination ? `<p><strong>Reiseziel:</strong> ${payload.destination}</p>` : ''}
-        ${payload.price ? `<p><strong>ab Preis:</strong> ${formatPrice(payload.price)}</p>` : ''}
+        <p><strong>Leistung:</strong> ${payload.title || 'Individuelle Anfrage'}</p>
+        ${travelInfo}
       </div>
       <form id="booking-form">
         <div class="form-group">
@@ -621,18 +617,43 @@ function openBookingModal(payload) {
   overlay.setAttribute('aria-hidden', 'false');
 
   const bookingForm = document.getElementById('booking-form');
-  bookingForm?.addEventListener('submit', (event) => {
+  bookingForm?.addEventListener('submit', async (event) => {
     event.preventDefault();
     const formData = new FormData(bookingForm);
-    const booking = {
-      ...payload,
-      customer: Object.fromEntries(formData.entries()),
-      createdAt: new Date().toISOString(),
-      status: 'offen'
+    const name = formData.get('name')?.toString() || '';
+    const [firstName, ...rest] = name.trim().split(' ');
+    const customer = {
+      firstName: firstName || name,
+      lastName: rest.join(' '),
+      email: formData.get('email'),
+      phone: formData.get('phone'),
+      password: 'reiseportal123'
     };
-    storage.push('monotours24_bookings', booking);
-    alert('Vielen Dank! Ihre Reiseanfrage wurde übermittelt.');
-    closeModal();
+    const message = formData.get('message');
+
+    try {
+      await submitJson('/api/bookings', {
+        productType: payload.productType || 'anfrage',
+        productId: payload.productId || null,
+        amount: payload.price || 0,
+        currency: 'EUR',
+        travelDate: payload.travelDate || null,
+        customer
+      });
+      if (message) {
+        submitJson('/api/contact', {
+          firstName: customer.firstName,
+          lastName: customer.lastName,
+          email: customer.email,
+          phone: customer.phone,
+          message: `${message}\n\nAnfrage: ${payload.title || ''}`
+        }).catch(() => {});
+      }
+      alert('Vielen Dank! Ihre Reiseanfrage wurde übermittelt.');
+      closeModal();
+    } catch (error) {
+      alert(error.message || 'Die Anfrage konnte nicht gespeichert werden.');
+    }
   });
 }
 
@@ -659,8 +680,8 @@ function setupModal() {
       const key = trigger.dataset.openModal;
       const content = document.getElementById('modal-content');
       if (!key || !content) return;
-      content.innerHTML = legalContent[key] || '<p>Inhalt wird derzeit überarbeitet.</p>';
-      const overlay = document.getElementById('modal-overlay');
+      const legal = window.legalContent?.[key];
+      content.innerHTML = legal || '<p>Inhalt wird derzeit überarbeitet.</p>';
       overlay?.classList.add('show');
       overlay?.setAttribute('aria-hidden', 'false');
     });
@@ -679,7 +700,7 @@ function setupCookieBanner() {
     localStorage.setItem('monotours24_cookie', JSON.stringify({ consent: true, date: new Date().toISOString() }));
     banner.classList.remove('show');
   });
-  settings?.addEventListener('click', () => alert('Cookie-Einstellungen sind in Vorbereitung.'));
+  settings?.addEventListener('click', () => alert('Cookie-Einstellungen folgen in Kürze.'));
 }
 
 function setupNavigation() {
@@ -690,7 +711,6 @@ function setupNavigation() {
     toggle.setAttribute('aria-expanded', String(!expanded));
     menu?.classList.toggle('open');
   });
-
   menu?.querySelectorAll('a').forEach((link) => {
     link.addEventListener('click', () => {
       if (menu.classList.contains('open')) {
@@ -744,25 +764,102 @@ function formatPrice(price) {
   if (typeof price === 'number') {
     return `${price.toLocaleString('de-DE')} €`;
   }
-  return price;
+  return price || '';
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  createSlider();
-  createDeals();
-  createServices();
-  createHotels();
-  createPackages();
-  createTransfers();
-  createBlog();
-  setupSearchTabs();
-  setupHotelFilter();
-  setupCountdowns();
-  setupForms();
-  setupBookingButtons();
-  setupModal();
-  setupCookieBanner();
-  setupNavigation();
-  setupStatsObserver();
-  setupFooterYear();
-});
+function formatDate(date) {
+  if (!date) return '';
+  try {
+    return new Intl.DateTimeFormat('de-DE').format(new Date(date));
+  } catch (error) {
+    return date;
+  }
+}
+
+function formatPostDate(date) {
+  if (!date) return 'Aktuell';
+  try {
+    return new Intl.DateTimeFormat('de-DE', { dateStyle: 'medium' }).format(new Date(date));
+  } catch (error) {
+    return date;
+  }
+}
+
+async function submitJson(url, body) {
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+  if (!response.ok) {
+    let message = 'Aktion fehlgeschlagen.';
+    try {
+      const errorBody = await response.json();
+      message = errorBody.message || message;
+    } catch (error) {
+      // ignore
+    }
+    throw new Error(message);
+  }
+  return response.json().catch(() => ({}));
+}
+
+function encodeBookingPayload(payload) {
+  return encodeURIComponent(JSON.stringify(payload));
+}
+
+function determineHotelCategory(hotel) {
+  if (hotel.category) return hotel.category;
+  const rating = Number(hotel.rating || 0);
+  const description = `${hotel.description || ''}`.toLowerCase();
+  if (rating >= 4.7 || description.includes('luxus')) return 'luxury';
+  if (description.includes('strand') || description.includes('beach')) return 'beach';
+  return 'city';
+}
+
+function renderCategoryLabel(category) {
+  switch (category) {
+    case 'luxury':
+      return 'Luxus';
+    case 'beach':
+      return 'Strand';
+    case 'city':
+    default:
+      return 'City';
+  }
+}
+
+function formatAvailability(product) {
+  if (product.availabilityStart && product.availabilityEnd) {
+    return `${formatDate(product.availabilityStart)} – ${formatDate(product.availabilityEnd)}`;
+  }
+  if (product.availabilityStart) {
+    return `ab ${formatDate(product.availabilityStart)}`;
+  }
+  return 'flexibel';
+}
+
+function defaultServices() {
+  return [
+    {
+      icon: '✈️',
+      title: 'Flugexperten',
+      description: 'Direkte Anbindung an GDS & NDC – wir sichern Verfügbarkeiten und Upgrades.'
+    },
+    {
+      icon: '🏨',
+      title: 'Hotelwelten',
+      description: 'Über 50.000 Hotels mit Bewertungen, Nachhaltigkeits-Scores und Zusatzleistungen.'
+    },
+    {
+      icon: '🛡️',
+      title: 'Reiseschutz',
+      description: 'Flexible Umbuchungs- und Stornomöglichkeiten inklusive Assistance-Service.'
+    },
+    {
+      icon: '🤝',
+      title: 'B2B Partnerschaften',
+      description: 'White-Label, API & individuelle Provisionen für Reisebüros und Firmenkunden.'
+    }
+  ];
+}
